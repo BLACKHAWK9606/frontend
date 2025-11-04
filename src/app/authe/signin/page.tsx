@@ -74,7 +74,7 @@ export default function SignInPage() {
       
       const responseText = await res.text();
       console.log('Response text:', responseText);
-      
+      console.log("Response body:", responseText);
       let data;
       try {
         data = JSON.parse(responseText);
