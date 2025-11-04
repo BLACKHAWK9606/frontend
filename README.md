@@ -1,3 +1,7 @@
+# Frontend - Bancassurance Project
+
+This repository holds the frontend code made with Next.js for a bancassurance project.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
