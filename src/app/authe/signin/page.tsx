@@ -85,8 +85,11 @@ export default function SignInPage() {
       if (!res.ok) {
         setServerMsg(data?.message || `Sign in failed (${res.status})`);
       } else {
+        // Store tokens securely using AuthManager
+        const { accessToken, refreshToken, expiresIn } = data;
+        // AuthManager.setTokens({ accessToken, refreshToken, expiresIn });
         setServerMsg("Signed in successfully — redirecting...");
-        // setTimeout(() => router.push("/dashboard"), 800);
+        setTimeout(() => router.push("/dashboard"), 800);
       }
     } catch (err) {
       console.error("Network error", err);
