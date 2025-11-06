@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: false,
   output: "standalone",
+  images: {
+    domains: ['cdn.dummyjson.com', 'dummyjson.com'],
+  },
   // eslint: {
   //   ignoreDuringBuilds: false,
   // },
@@ -18,6 +21,10 @@ const nextConfig: NextConfig = {
       {
         source: "/auth/login",
         destination: `${backendurl}/auth/login`,
+      },
+      {
+        source: "/auth/:path*",
+        destination: `${backendurl}/auth/:path*`,
       },
     ];
   }
