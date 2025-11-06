@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function OtpPage() {
@@ -8,23 +8,64 @@ export default function OtpPage() {
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-  async function handleVerify(e: FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  async function handleVerify(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
+    setMessage(null);
 
-    // --- Simulated verification delay ---
-    setTimeout(() => {
-      if (otp === "123456") {
-        setMessage("✅ OTP verified! Redirecting...");
-        // fake saving a token
-        localStorage.setItem("token", "fake-auth-token");
-        setTimeout(() => router.push("/homepage"), 1500);
-      } else {
-        setMessage("❌ Invalid OTP. Try again.");
+    const tempToken = localStorage.getItem("tempToken");
+    if (!tempToken) {
+      setMessage("Missing temporary token. Please sign in again.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const base = process.env.NEXT_PUBLIC_BASE_URL;
+      const res = await fetch(`${base}/auth/verify-login-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          tempToken,      // ✅ matches Swagger
+          otpCode: otp,   // ✅ matches Swagger
+        }),
+      });
+
+      const text = await res.text();
+      let data: any;
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        data = { message: text };
       }
+
+      if (!res.ok) {
+        setMessage(data?.message || `Verification failed (${res.status})`);
+        return;
+      }
+
+      // ✅ Success — store tokens if backend returns them
+      if (data?.accessToken) {
+        localStorage.setItem("accessToken", data.accessToken);
+        if (data?.refreshToken)
+          localStorage.setItem("refreshToken", data.refreshToken);
+      }
+
+      localStorage.removeItem("tempToken");
+      setMessage("✅ OTP verified! Redirecting...");
+      setTimeout(() => router.push("/customer"), 1000);
+    } catch (err) {
+      console.error("OTP verification error:", err);
+      setMessage("Network error — please try again later.");
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   }
 
   return (
@@ -50,9 +91,12 @@ export default function OtpPage() {
 
           <form onSubmit={handleVerify} className="space-y-4">
             <input
+              ref={inputRef}
               type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={otp}
-              onChange={(e) => setOtp(e.target.value)}
+              onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
               maxLength={6}
               className="w-full border rounded-md px-3 py-2 text-center text-lg tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="••••••"

@@ -62,11 +62,20 @@ export default function SignInPage() {
         password: form.password,
         authType: usePhone ? "phone" : "email",
       };
-      const res = await fetch("/authe/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload ),
-      });
+      const res = await fetch(
+  `${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`,
+  {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      identifier: form.identifier,
+      password: form.password,
+      authType: usePhone ? "PHONE" : "EMAIL", 
+    }),
+    credentials: "include", 
+  }
+);
+
       // const res = await fetch("/authe/signin", {
       //   method: "POST",
       //   headers: { "Content-Type": "application/json" },
