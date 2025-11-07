@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import AuthLayout from "../layout/authlayout";
 
 export default function OtpPage() {
   const router = useRouter();
@@ -69,19 +70,8 @@ export default function OtpPage() {
   }
 
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-white">
-      {/* Left side - image */}
-      <div className="hidden lg:flex items-center justify-center bg-gray-100">
-        <img
-          src="/login.jpg"
-          alt="Authentication visual"
-          className="w-full h-full object-cover"
-        />
-      </div>
-
-      {/* Right side - form */}
-      <div className="flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-white">
-        <div className="max-w-sm sm:max-w-md w-full bg-white p-4 sm:p-6 rounded-2xl shadow">
+    <AuthLayout>
+      <div className="bg-white p-6 rounded-2xl shadow">
           <h1 className="text-xl sm:text-2xl font-semibold mb-3 text-center">
             Verify OTP
           </h1>
@@ -130,7 +120,6 @@ export default function OtpPage() {
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </AuthLayout>
   );
 }
