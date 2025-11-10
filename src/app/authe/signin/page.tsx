@@ -90,10 +90,10 @@ export default function SignInPage() {
       } else {
         // 🔹 Save tempToken for OTP verification
         if (data?.tempToken) {
-          localStorage.setItem("tempToken", data.tempToken);
+          sessionStorage.setItem("tempToken", data.tempToken);
         }
         if (data?.user) {
-          localStorage.setItem("user", JSON.stringify(data.user));
+          sessionStorage.setItem("user", JSON.stringify(data.user));
         }
 
         setServerMsg("OTP sent! Redirecting to verification page...");

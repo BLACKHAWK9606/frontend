@@ -18,7 +18,7 @@ export default function OtpPage() {
       if (otp === "123456") {
         setMessage("✅ OTP verified! Redirecting...");
         // fake saving a token
-        localStorage.setItem("token", "fake-auth-token");
+        sessionStorage.setItem("token", "fake-auth-token");
         setTimeout(() => router.push("/banca/dashboard"), 1500);
       } else {
         setMessage("❌ Invalid OTP. Try again.");

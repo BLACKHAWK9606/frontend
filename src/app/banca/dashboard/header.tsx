@@ -4,6 +4,60 @@ import { useState } from "react";
 
 export default function Header() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+
+    try {
+      // Get the token from sessionStorage
+      const token = sessionStorage.getItem('token');
+
+      if (!token) {
+        console.error('No token found in sessionStorage');
+        //Redirect to login anyway
+        sessionStorage.clear();
+        window.location.href = '/';
+        return;
+      }
+
+      const response = await fetch ('/auth/logout', {
+        method: 'POST', 
+        headers: {
+          'accept': '*/*',
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if(response.ok) {
+        const result = await response.json ();
+        console.log('Logout Successful:', result);
+
+        //Clear all user data from sessionStorage
+        sessionStorage.removeItem('token');
+        // Remove any other auth-related items if they exist
+        sessionStorage.removeItem('calendly-store');
+        sessionStorage.removeItem('calendly-internal-store');
+
+        //Redirect to login page
+        window.location.href = '/'
+      } else {
+        console.error('Logout Failed:', response.status);
+        //Even if API call fails, clear session storage and redirect
+        sessionStorage.clear();
+        window.location.href = '/'
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+      //Clear storage and redirect even on network errors
+      sessionStorage.clear();
+      window.location.href = '/'
+    } finally {
+      setIsLoggingOut(false);
+      setIsProfileOpen(false);
+    }
+  };
 
   return (
     <header className="bg-white shadow-md border-b">
@@ -29,7 +83,7 @@ export default function Header() {
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-linear-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                 <span className="text-white text-sm font-medium">AD</span>
               </div>
               <div className="text-left">
@@ -55,10 +109,11 @@ export default function Header() {
                     Help & Support
                   </a>
                   <div className="border-t border-gray-200 my-1"></div>
-                  <a href="#" className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                    <i className="fas fa-sign-out-alt"></i>
-                    Sign Out
-                  </a>
+                  <button onClick={handleLogout} disabled={isLoggingOut} className={`flex items-center gap-3 px-4 py-2 text-sm w-full text-left ${isLoggingOut ? 'text-gray-400 cursor-not-allowed':'text-red-600 hover:bg-gray-100'}`}>
+                      <i className="fas fa-sign-out-alt"></i>
+                      {isLoggingOut ? 'Signing Out...' : 'Sign Out'}
+                  </button>
+
                 </div>
               </div>
             )}

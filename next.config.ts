@@ -23,8 +23,8 @@ const nextConfig: NextConfig = {
         destination: `${backendurl}/auth/login`,
       },
       {
-        source: "/auth/:path*",
-        destination: `${backendurl}/auth/:path*`,
+        source: "/auth/logout",
+        destination: `${backendurl}/auth/logout`,
       },
     ];
   }
