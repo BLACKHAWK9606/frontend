@@ -30,7 +30,7 @@ export default function NewPasswordPage() {
     setTimeout(() => {
       setMessage("✅ Password reset successfully! Redirecting...");
       setLoading(false);
-      setTimeout(() => router.push("/authe/signin"), 1500);
+      setTimeout(() => router.push("/"), 1500);
     }, 1200);
   }
 

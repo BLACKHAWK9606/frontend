@@ -122,7 +122,7 @@ export default function SignInPage() {
   }
 
   return (
-    <AuthLayout>
+    
       <div className="bg-white p-6 rounded-2xl shadow">
         <h1 className="text-2xl font-semibold mb-4">Sign in</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -204,6 +204,6 @@ export default function SignInPage() {
           </button>
         </div>
       </div>
-    </AuthLayout>
+    
   );
 }

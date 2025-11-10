@@ -66,7 +66,7 @@ export default function ResetRequestPage() {
 
         <div className="text-center mt-4">
           <button
-            onClick={() => router.push("/authe/signin")}
+            onClick={() => router.push("/")}
             className="text-sm text-gray-600 hover:text-blue-600 underline"
           >
             Back to Sign In
