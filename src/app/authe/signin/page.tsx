@@ -2,6 +2,7 @@
 
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import AuthLayout from "../layout/authlayout";
 
 function validateEmail(email: string): { ok: boolean; message?: string } {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -62,11 +63,20 @@ export default function SignInPage() {
         password: form.password,
         authType: usePhone ? "phone" : "email",
       };
-      const res = await fetch("/authe/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload ),
-      });
+      const res = await fetch(
+  `${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`,
+  {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      identifier: form.identifier,
+      password: form.password,
+      authType: usePhone ? "PHONE" : "EMAIL", 
+    }),
+    credentials: "include", 
+  }
+);
+
       // const res = await fetch("/authe/signin", {
       //   method: "POST",
       //   headers: { "Content-Type": "application/json" },
@@ -112,8 +122,8 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-4">
-      <div className="max-w-md w-full bg-white p-6 rounded-2xl shadow">
+    
+      <div className="bg-white p-6 rounded-2xl shadow">
         <h1 className="text-2xl font-semibold mb-4">Sign in</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* existing form unchanged */}
@@ -184,7 +194,16 @@ export default function SignInPage() {
             </p>
           )}
         </form>
+
+        <div className="text-center mt-4">
+          <button
+            onClick={() => router.push("/authe/reset/request")}
+            className="text-sm text-gray-600 hover:text-blue-600 underline"
+          >
+            Forgot password?
+          </button>
+        </div>
       </div>
-    </div>
+    
   );
 }

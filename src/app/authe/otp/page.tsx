@@ -1,46 +1,77 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import AuthLayout from "../layout/authlayout";
 
 export default function OtpPage() {
   const router = useRouter();
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-  async function handleVerify(e: FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  async function handleVerify(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
+    setMessage(null);
 
-    // --- Simulated verification delay ---
-    setTimeout(() => {
-      if (otp === "123456") {
-        setMessage("✅ OTP verified! Redirecting...");
-        // fake saving a token
-        sessionStorage.setItem("token", "fake-auth-token");
-        setTimeout(() => router.push("/banca/dashboard"), 1500);
-      } else {
-        setMessage("❌ Invalid OTP. Try again.");
+    const tempToken = localStorage.getItem("tempToken");
+    if (!tempToken) {
+      setMessage("Missing temporary token. Please sign in again.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const base = process.env.NEXT_PUBLIC_BASE_URL;
+      const res = await fetch(`${base}/auth/verify-login-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          tempToken,      // ✅ matches Swagger
+          otpCode: otp,   // ✅ matches Swagger
+        }),
+      });
+
+      const text = await res.text();
+      let data: any;
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        data = { message: text };
       }
+
+      if (!res.ok) {
+        setMessage(data?.message || `Verification failed (${res.status})`);
+        return;
+      }
+
+      // ✅ Success — store tokens if backend returns them
+      if (data?.accessToken) {
+        sessionStorage.setItem("accessToken", data.accessToken);
+        if (data?.refreshToken)
+          sessionStorage.setItem("refreshToken", data.refreshToken);
+      }
+
+      sessionStorage.removeItem("tempToken");
+      setMessage("✅ OTP verified! Redirecting...");
+      setTimeout(() => router.push("/customer"), 1000);
+    } catch (err) {
+      console.error("OTP verification error:", err);
+      setMessage("Network error — please try again later.");
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   }
 
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 bg-white">
-      {/* Left side - image */}
-      <div className="hidden lg:flex items-center justify-center bg-gray-100">
-        <img
-          src="/login.jpg"
-          alt="Authentication visual"
-          className="w-full h-full object-cover"
-        />
-      </div>
-
-      {/* Right side - form */}
-      <div className="flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-white">
-        <div className="max-w-sm sm:max-w-md w-full bg-white p-4 sm:p-6 rounded-2xl shadow">
+    <AuthLayout>
+      <div className="bg-white p-6 rounded-2xl shadow">
           <h1 className="text-xl sm:text-2xl font-semibold mb-3 text-center">
             Verify OTP
           </h1>
@@ -50,9 +81,12 @@ export default function OtpPage() {
 
           <form onSubmit={handleVerify} className="space-y-4">
             <input
+              ref={inputRef}
               type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={otp}
-              onChange={(e) => setOtp(e.target.value)}
+              onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
               maxLength={6}
               className="w-full border rounded-md px-3 py-2 text-center text-lg tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="••••••"
@@ -86,7 +120,6 @@ export default function OtpPage() {
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </AuthLayout>
   );
 }
