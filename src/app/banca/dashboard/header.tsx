@@ -46,7 +46,7 @@ export default function Header() {
                     <i className="fas fa-user text-gray-400"></i>
                     My Profile
                   </a>
-                  <a href="#" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  <a href="./settings" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     <i className="fas fa-cog text-gray-400"></i>
                     Settings
                   </a>

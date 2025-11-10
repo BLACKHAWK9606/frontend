@@ -61,7 +61,7 @@ export default function Sidebar() {
         </a>
 
         <a
-          href="#"
+          href="./policy-management"
           className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors"
         >
           <FileText className="w-5 h-5" />
@@ -69,7 +69,7 @@ export default function Sidebar() {
         </a>
 
         <a
-          href="#"
+          href="./claims"
           className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors"
         >
           <ClipboardCheck className="w-5 h-5" />
@@ -77,7 +77,7 @@ export default function Sidebar() {
         </a>
 
         <a
-          href="#"
+          href="./reports"
           className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors"
         >
           <LineChart className="w-5 h-5" />
@@ -85,7 +85,7 @@ export default function Sidebar() {
         </a>
 
         <a
-          href="#"
+          href="./settings"
           className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors"
         >
           <Settings className="w-5 h-5" />
