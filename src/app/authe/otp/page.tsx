@@ -53,12 +53,12 @@ export default function OtpPage() {
 
       // ✅ Success — store tokens if backend returns them
       if (data?.accessToken) {
-        localStorage.setItem("accessToken", data.accessToken);
+        sessionStorage.setItem("accessToken", data.accessToken);
         if (data?.refreshToken)
-          localStorage.setItem("refreshToken", data.refreshToken);
+          sessionStorage.setItem("refreshToken", data.refreshToken);
       }
 
-      localStorage.removeItem("tempToken");
+      sessionStorage.removeItem("tempToken");
       setMessage("✅ OTP verified! Redirecting...");
       setTimeout(() => router.push("/customer"), 1000);
     } catch (err) {
