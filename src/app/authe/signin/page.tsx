@@ -98,7 +98,7 @@ export default function SignInPage() {
 
         setServerMsg("OTP sent! Redirecting to verification page...");
         setTimeout(() => {
-          router.push("/otp");
+          router.push("/authe/otp");
         }, 800);
       }
     } catch (err) {
