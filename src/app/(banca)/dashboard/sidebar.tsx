@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
   BarChart2,
   Users,
@@ -88,53 +89,35 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 p-4 space-y-2">
-        <a
-          href="./dashboard"
-          className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors"
-        >
+        <Link href="./dashboard" className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors">
           <BarChart2 className="w-5 h-5" />
           {isSidebarOpen && <span>Dashboard</span>}
-        </a>
+        </Link>
 
-        <a
-          href="./customer"
-          className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors"
-        >
+        <Link href="./customer" className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors">
           <Users className="w-5 h-5" />
           {isSidebarOpen && <span className="font-medium">Customers</span>}
-        </a>
+        </Link>
 
-        <a
-          href="./policy-management"
-          className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors"
-        >
+        <Link href="./policy-management" className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors">
           <FileText className="w-5 h-5" />
           {isSidebarOpen && <span>Policy Management</span>}
-        </a>
+        </Link>
 
-        <a
-          href="./claims"
-          className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors"
-        >
+        <Link href="./claims" className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors">
           <ClipboardCheck className="w-5 h-5" />
           {isSidebarOpen && <span>Claims Processing</span>}
-        </a>
+        </Link>
 
-        <a
-          href="./reports"
-          className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors"
-        >
+        <Link href="./reports" className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors">
           <LineChart className="w-5 h-5" />
           {isSidebarOpen && <span>Reports & Analytics</span>}
-        </a>
+        </Link>
 
-        <a
-          href="./settings"
-          className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors"
-        >
+        <Link href="./settings" className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors">
           <Settings className="w-5 h-5" />
           {isSidebarOpen && <span>Settings</span>}
-        </a>
+        </Link>
       </nav>
 
       <footer className="p-4 border-t border-blue-700 space-y-3">

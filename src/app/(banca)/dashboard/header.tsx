@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { toast } from "@/compoments/ui/toast";
 
 export default function Header() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -33,6 +35,7 @@ export default function Header() {
       if(response.ok) {
         const result = await response.json ();
         console.log('Logout Successful:', result);
+        toast.success('Logged out successfully');
 
         //Clear all user data from sessionStorage
         sessionStorage.removeItem('token');
@@ -96,18 +99,18 @@ export default function Header() {
             {isProfileOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 max-h-60 overflow-hidden">
                 <div className="overflow-y-auto scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-blue-100 max-h-60">
-                  <a href="#" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  <Link href="#" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     <i className="fas fa-user text-gray-400"></i>
                     My Profile
-                  </a>
-                  <a href="./settings" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  </Link>
+                  <Link href="./settings" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     <i className="fas fa-cog text-gray-400"></i>
                     Settings
-                  </a>
-                  <a href="#" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  </Link>
+                  <Link href="#" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                     <i className="fas fa-question-circle text-gray-400"></i>
                     Help & Support
-                  </a>
+                  </Link>
                   <div className="border-t border-gray-200 my-1"></div>
                   <button onClick={handleLogout} disabled={isLoggingOut} className={`flex items-center gap-3 px-4 py-2 text-sm w-full text-left ${isLoggingOut ? 'text-gray-400 cursor-not-allowed':'text-red-600 hover:bg-gray-100'}`}>
                       <i className="fas fa-sign-out-alt"></i>
