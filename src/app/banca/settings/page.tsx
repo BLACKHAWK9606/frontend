@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useEffect } from 'react';
+import { useRouter } from "next/navigation";
+
 import {
   BarChart2,
   Users,
@@ -38,12 +41,34 @@ const settingsContent = {
   },
 };
 
+
 export default function SettingsPage() {
+
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const searchParams = useSearchParams();
   const currentTab = searchParams.get('tab') || 'general';
   const currentContent = settingsContent[currentTab as keyof typeof settingsContent] || settingsContent.general;
+
+const router = useRouter();
+  useEffect(() => {
+    const token = sessionStorage.getItem("accessToken");
+     if (!token) {
+    router.replace("/"); // absolute path
+    return;
+  }
+  const userStr = sessionStorage.getItem("user");
+  if (!userStr) {
+    router.replace("/"); // absolute path
+    return;
+  }
+  const user = JSON.parse(userStr);
+  if (user.roleName !== "SUPERUSER") {
+    router.replace("/dashboard"); // absolute path
+  }
+  }, [router]);
+
+
 
   return (
     <div className="flex h-screen bg-gray-50">
