@@ -46,6 +46,41 @@ export default function SettingsPage() {
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      const token = sessionStorage.getItem('token');
+      if (!token) {
+        sessionStorage.clear();
+        window.location.href = '/';
+        return;
+      }
+      const response = await fetch('/auth/logout', {
+        method: 'POST',
+        headers: {
+          'accept': '*/*',
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('calendly-store');
+        sessionStorage.removeItem('calendly-internal-store');
+        window.location.href = '/';
+      } else {
+        sessionStorage.clear();
+        window.location.href = '/';
+      }
+    } catch (error) {
+      sessionStorage.clear();
+      window.location.href = '/';
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
   const searchParams = useSearchParams();
   const currentTab = searchParams.get('tab') || 'general';
   const currentContent = settingsContent[currentTab as keyof typeof settingsContent] || settingsContent.general;
@@ -78,7 +113,7 @@ const router = useRouter();
           isSidebarOpen
             ? 'w-64 xl:w-64 lg:w-56 md:w-48'
             : 'w-20 xl:w-20 lg:w-16 md:w-14'
-        } bg-gradient-to-t from-blue-900 to-blue-600 text-white border-r-2 shadow-lg transition-all duration-300 flex flex-col`}
+        } bg-linear-to-t from-blue-900 to-blue-600 text-white border-r-2 shadow-lg transition-all duration-300 flex flex-col`}
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           {isSidebarOpen ? (
@@ -129,9 +164,9 @@ const router = useRouter();
         </nav>
 
         <footer className="p-4 border-t border-blue-700 space-y-3">
-          <button className="w-full flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors">
+          <button onClick={handleLogout} disabled={isLoggingOut} className="w-full flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
             <LogOut className="w-5 h-5" />
-            {isSidebarOpen && <span>Sign Out</span>}
+            {isSidebarOpen && <span>{isLoggingOut ? 'Signing Out...' : 'Sign Out'}</span>}
           </button>
           <div className="text-center">
             <p className={`text-xs ${isSidebarOpen ? 'text-white' : 'text-blue-200'}`}>
@@ -191,10 +226,10 @@ const router = useRouter();
                       Help & Support
                     </a>
                     <div className="border-t border-gray-200 my-1"></div>
-                    <a href="#" className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                    <button onClick={handleLogout} disabled={isLoggingOut} className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full text-left disabled:opacity-50 disabled:cursor-not-allowed">
                       <i className="fas fa-sign-out-alt"></i>
-                      Sign Out
-                    </a>
+                      {isLoggingOut ? 'Signing Out...' : 'Sign Out'}
+                    </button>
                   </div>
                 )}
               </div>

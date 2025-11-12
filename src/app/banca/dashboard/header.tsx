@@ -9,25 +9,6 @@ interface User {
 
 export default function Header() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    try {
-      const userStr = sessionStorage.getItem("user");
-      if (userStr) {
-        setUser(JSON.parse(userStr));
-      }
-    } catch {
-      setUser(null);
-    }
-  }, []);
-
-  const greeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
-  };
 
   return (
     <header className="bg-white shadow-md border-b">
@@ -53,9 +34,7 @@ export default function Header() {
               className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-medium">
-                  {user?.fullName ? user.fullName.slice(0, 2).toUpperCase() : "U"}
-                </span>
+                <span className="text-white text-sm font-medium">AD</span>
               </div>
               <div className="text-left">
                 <p className="text-sm font-medium text-gray-900">
@@ -98,10 +77,7 @@ export default function Header() {
                     Help & Support
                   </a>
                   <div className="border-t border-gray-200 my-1"></div>
-                  <a
-                    href="#"
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                  >
+                  <a href="#" className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
                     <i className="fas fa-sign-out-alt"></i>
                     Sign Out
                   </a>

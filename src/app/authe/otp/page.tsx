@@ -65,14 +65,10 @@ export default function OtpPage() {
       if (data?.accessToken) {
         sessionStorage.setItem("accessToken", data.accessToken);
         if (data?.refreshToken)
-          sessionStorage.setItem("refreshToken", data.refreshToken);
-        
-        if (data?.user) sessionStorage.setItem("user", JSON.stringify(data.user));
+          localStorage.setItem("refreshToken", data.refreshToken);
       }
 
-      console.log(data);
-
-      sessionStorage.removeItem("tempToken");
+      localStorage.removeItem("tempToken");
       setMessage("✅ OTP verified! Redirecting...");
       setTimeout(() => router.push("/banca/dashboard"), 1000);
     } catch (err) {
