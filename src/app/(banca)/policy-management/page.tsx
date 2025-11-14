@@ -15,8 +15,13 @@ import {
   ChevronRight,
 } from 'lucide-react';
 
+<<<<<<< HEAD
 import {Card, CardHeader, CardTitle, CardContent} from '@/components/ui/card';
 import {Input} from '@/components/ui/input';
+=======
+import {Card, CardHeader, CardTitle, CardContent} from '@/compoments/ui/card';
+import {Input} from '@/compoments/ui/input';
+>>>>>>> d0bd2ba147a9c1465648b71f2365e533600b92fd
 
 type Policy = {
   policyNumber: string;
@@ -211,6 +216,7 @@ return (
         </div>
       </div>
 
+<<<<<<< HEAD
       {/* Content Section */}
       <div className="mt-6">
         <Card className="bg-white text-black max-w-max">
@@ -299,4 +305,69 @@ return (
   </div>
 );
 
+=======
+        <main className="flex-1 overflow-x-hidden overflow-y-auto">
+          <div className="p-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Policy Management</CardTitle>
+                  </CardHeader>
+                    <CardContent className="space-y-6">
+                      <div className="flex justify-between items-center">
+                        <Input placeholder="Search by customer or policy number" className="w-64" />
+                        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Search</button>
+                      </div>
+
+                      <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div className="overflow-x-auto">
+                          <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-blue-600 text-white text-medium font-semibold uppercase tracking-wider">
+                              <tr>
+                                <th scope="col" className="px-6 py-3 text-left">Policy #</th>
+                                <th scope="col" className="px-6 py-3 text-left">Customer</th>
+                                <th scope="col" className="px-6 py-3 text-left">Type</th>
+                                <th scope="col" className="px-6 py-3 text-left">Status</th>
+                                <th scope="col" className="px-6 py-3 text-left">Start</th>
+                                <th scope="col" className="px-6 py-3 text-left">End</th>
+                                <th scope="col" className="px-6 py-3 text-left">Premium</th>
+                                <th scope="col" className="px-6 py-3 text-left">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                              {currentPolicies.map((policy) => (
+                                <tr key={policy.policyNumber} className="hover:bg-gray-50 transition-colors">
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{policy.policyNumber}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{policy.customer}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{policy.type}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(policy.status)}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{policy.startDate}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{policy.endDate}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{policy.premium}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <button className="text-blue-600 hover:text-blue-900 mr-3">View</button>
+                                    <button className="text-blue-600 hover:text-blue-900">Edit</button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </CardContent>
+            </Card>
+          </div>
+        </main>
+      </div>
+
+        {/* Profile  */}
+        {isProfileOpen && (
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => setIsProfileOpen(false)}
+          ></div>
+        )}
+      </div>
+    </div>
+  );
+>>>>>>> d0bd2ba147a9c1465648b71f2365e533600b92fd
 }
