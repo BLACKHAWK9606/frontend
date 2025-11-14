@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import AuthLayout from "../layout/authlayout";
+import AuthLayout from "../layout";
 
 export default function OtpPage() {
   const router = useRouter();
@@ -11,14 +11,6 @@ export default function OtpPage() {
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-
-//    useEffect(() => {
-//   const accessToken = localStorage.getItem("accessToken");
-//   if (accessToken) {
-//     // Already logged in → redirect away
-//     router.replace("/");
-//   }
-// }, [router]);
 
 
   useEffect(() => {
@@ -43,8 +35,8 @@ export default function OtpPage() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          tempToken,      // ✅ matches Swagger
-          otpCode: otp,   // ✅ matches Swagger
+          tempToken,      
+          otpCode: otp,   
         }),
       });
 
@@ -65,10 +57,10 @@ export default function OtpPage() {
       if (data?.accessToken) {
         sessionStorage.setItem("accessToken", data.accessToken);
         if (data?.refreshToken)
-          localStorage.setItem("refreshToken", data.refreshToken);
+          sessionStorage.setItem("refreshToken", data.refreshToken);
       }
 
-      localStorage.removeItem("tempToken");
+      sessionStorage.removeItem("tempToken");
       setMessage("✅ OTP verified! Redirecting...");
       setTimeout(() => router.push("/banca/dashboard"), 1000);
     } catch (err) {
@@ -80,7 +72,7 @@ export default function OtpPage() {
   }
 
   return (
-    <AuthLayout>
+    
       <div className="bg-white p-6 rounded-2xl shadow">
           <h1 className="text-xl sm:text-2xl font-semibold mb-3 text-center">
             Verify OTP
@@ -130,6 +122,6 @@ export default function OtpPage() {
             </button>
           </div>
         </div>
-    </AuthLayout>
+    
   );
 }

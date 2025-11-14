@@ -2,7 +2,7 @@
 
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import AuthLayout from "../layout/authlayout";
+import AuthLayout from "../layout";
 
 function validateEmail(email: string): { ok: boolean; message?: string } {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,6 +29,9 @@ export default function SignInPage() {
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [serverMsg, setServerMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const token = sessionStorage.getItem("accessToken") || "";
+
+
 
   function onChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -66,12 +69,16 @@ export default function SignInPage() {
         authType: useAD ? "ACTIVE_DIRECTORY" : "EMAIL",
       };
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`, {
+      const res = await fetch("/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+         },
         body: JSON.stringify(payload),
         credentials: "include",
-      });
+      }
+    );
 
       const responseText = await res.text();
       let data;
@@ -84,11 +91,6 @@ export default function SignInPage() {
       if (!res.ok) {
         setServerMsg(data?.message || `Sign in failed (${res.status})`);
       } else {
-<<<<<<< HEAD
-        if (data?.tempToken) sessionStorage.setItem("tempToken", data.tempToken);
-       
-        console.log(data);
-=======
         // 🔹 Save tempToken for OTP verification
         if (data?.tempToken) {
           sessionStorage.setItem("tempToken", data.tempToken);
@@ -96,7 +98,6 @@ export default function SignInPage() {
         if (data?.user) {
           sessionStorage.setItem("user", JSON.stringify(data.user));
         }
->>>>>>> d34a3f509e533f548e2249a385e3daa5d9b5ece5
 
         setServerMsg("OTP sent! Redirecting to verification page...");
         setTimeout(() => router.push("/authe/otp"), 800);

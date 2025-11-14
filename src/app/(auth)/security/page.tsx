@@ -2,7 +2,7 @@
 
 import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import AuthLayout from "../layout/authlayout";
+import AuthLayout from "../layout";
 
 interface Question {
   id: number;
@@ -124,7 +124,7 @@ export default function SecurityQuestionsPage() {
   };
 
   return (
-    <AuthLayout>
+    
       <div className="bg-white p-6 rounded-2xl shadow">
         <h1 className="text-2xl font-semibold mb-3 text-gray-800">Security Questions</h1>
 
@@ -190,6 +190,6 @@ export default function SecurityQuestionsPage() {
           </>
         )}
       </div>
-    </AuthLayout>
+
   );
 }
