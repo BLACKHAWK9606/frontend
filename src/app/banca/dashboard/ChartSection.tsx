@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
-import {Table, TableHeader, TableHead, TableBody, TableRow, TableCell} from '@/shadcn/ui/table';
-import {Card, CardContent, CardHeader, CardTitle} from '@/shadcn/ui/card';
+import {Table, TableHeader, TableHead, TableBody, TableRow, TableCell} from '@/components/ui/table';
+import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import Image from 'next/image';
 
 export default function ChartSection() {

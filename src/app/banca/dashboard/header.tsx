@@ -38,9 +38,9 @@ export default function Header() {
               </div>
               <div className="text-left">
                 <p className="text-sm font-medium text-gray-900">
-                  {user?.fullName || "User"}
+                  
                 </p>
-                <p className="text-xs text-gray-500">{user?.roleName || ""}</p>
+                <p className="text-xs text-gray-500"></p>
               </div>
               <i className="fas fa-chevron-down text-gray-500 text-xs"></i>
             </button>
@@ -50,9 +50,11 @@ export default function Header() {
                 <div className="overflow-y-auto scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-blue-100 max-h-60">
                   <div className="px-4 py-2 border-b border-gray-200">
                     <p className="text-sm font-medium text-gray-700">
-                      {greeting()}, {user?.fullName || "User"}
+                     
                     </p>
-                    <p className="text-xs text-gray-500 uppercase">{user?.roleName || ""}</p>
+                    <p className="text-xs text-gray-500 uppercase">
+
+                    </p>
                   </div>
 
                   <a

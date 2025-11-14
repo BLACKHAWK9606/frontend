@@ -27,72 +27,128 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { title } from "process"
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Superadmin",
+    email: "superadmin@bancassurance.com",
+    avatar: "/profile-img.jpg",
   },
   navMain: [
     {
-      title: "Playground",
+      title: "Dashboard",
+      url: "./dashboard",
+      icon: BookOpen,
+    },
+    {
+      title: "Set ups",
       url: "#",
-      icon: SquareTerminal,
-      isActive: true,
+      icon: Settings2,
       items: [
         {
-          title: "History",
+          title: "Organization Setups",
           url: "#",
         },
         {
-          title: "Starred",
+          title: "Underwriting Setups",
           url: "#",
         },
         {
-          title: "Settings",
+          title: "Finance Setups",
           url: "#",
         },
       ],
     },
     {
-      title: "Models",
+      title: "User Administration",
       url: "#",
       icon: Bot,
       items: [
         {
-          title: "Genesis",
+          title: "Users and Roles",
           url: "#",
         },
         {
-          title: "Explorer",
+          title: "Roles and Permissions",
           url: "#",
         },
         {
-          title: "Quantum",
+          title: "Permissions",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Quotes",
       url: "#",
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
+          title: "Prospects",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "New Quote",
           url: "#",
         },
         {
-          title: "Tutorials",
+          title: "Medical Quote",
           url: "#",
         },
         {
-          title: "Changelog",
+          title: "Quote Enquiry",
+          url: "#",
+        },
+        {
+          title: "Convert Quotes",
+          url: "#",
+
+        },
+      ],
+    },
+    {
+      title: "Underwriters & Clients",
+      url: "#",
+      icon: Bot,
+      items: [
+        {
+          title: "Insurers/Sub Agents",
+          url: "#",
+        },
+        {
+          title: "Clients",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Transactions Module",
+      url: "#",
+      icon: Bot,
+      items: [
+        {
+          title: "Lapse Policies",
+          url: "#",
+        },
+        {
+          title: "Policy Enquiry",
+          url: "#",
+        },
+        {
+          title: "Pending Trans",
+          url: "#",
+        },
+        {
+          title: "Renewals",
+          url: "#",
+        },
+        {
+          title: "Refunds",
+          url: "#",
+        },
+        {
+          title: "Transactions Reconcilliation",
           url: "#",
         },
       ],
@@ -133,23 +189,7 @@ const data = {
       icon: Send,
     },
   ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
+
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -162,10 +202,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <a href="#">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <Command className="size-4" />
+            
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate font-medium">Bancassurance</span>
+                  <span className="truncate text-xs">Inssurance</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -174,7 +215,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

@@ -84,11 +84,6 @@ export default function SignInPage() {
       if (!res.ok) {
         setServerMsg(data?.message || `Sign in failed (${res.status})`);
       } else {
-<<<<<<< HEAD
-        if (data?.tempToken) sessionStorage.setItem("tempToken", data.tempToken);
-       
-        console.log(data);
-=======
         // 🔹 Save tempToken for OTP verification
         if (data?.tempToken) {
           sessionStorage.setItem("tempToken", data.tempToken);
@@ -96,7 +91,6 @@ export default function SignInPage() {
         if (data?.user) {
           sessionStorage.setItem("user", JSON.stringify(data.user));
         }
->>>>>>> d34a3f509e533f548e2249a385e3daa5d9b5ece5
 
         setServerMsg("OTP sent! Redirecting to verification page...");
         setTimeout(() => router.push("/authe/otp"), 800);

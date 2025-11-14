@@ -15,8 +15,8 @@ import {
   ChevronRight,
 } from 'lucide-react';
 
-import {Card, CardHeader, CardTitle, CardContent} from '@/shadcn/ui/card';
-import {Input} from '@/shadcn/ui/input';
+import {Card, CardHeader, CardTitle, CardContent} from '@/components/ui/card';
+import {Input} from '@/components/ui/input';
 
 type Policy = {
   policyNumber: string;
@@ -152,172 +152,58 @@ export default function PolicyPage() {
     )
   }
 
-  return (
-      <div className="flex h-screen bg-gray-50">
-        {/* Sidebar Navigation*/}
-       <aside className={`${isSidebarOpen ? 'w-64 xl:w-64 lg:w-56 md:w-48' : 'w-20 xl:w-20 lg:w-16 md:w-14'} bg-linear-to-t from-blue-900 to-blue-600 text-white border-r-2 shadow-lg transition-all duration-300 flex flex-col`}>
-           <div className="flex items-center justify-between p-4 border-b border-gray-200">
-             {isSidebarOpen ? (
-               <div className="flex items-center gap-3">
-                 <div className="w-8 h-8 bg-blue-600 rounded-lg"></div>
-                 <span className="text-xl font-bold">Bancassurance</span>
-               </div>
-             ) : (
-               <div className="w-8 h-8 bg-blue-200 rounded-lg mx-auto"></div>
-             )}
-             <button
-               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-               className="p-1 rounded-lg hover:bg-blue-700 text-white"
-             >
-               {isSidebarOpen ? (
-                 <ChevronLeft className="w-5 h-5" />
-               ) : (
-                 <ChevronRight className="w-5 h-5" />
-               )}
-             </button>
-           </div>
-     
-           <nav className="flex-1 p-4 space-y-2">
-             <a href="./dashboard" className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors">
-               <BarChart2 className="w-5 h-5" />
-               {isSidebarOpen && <span>Dashboard</span>}
-             </a>
-     
-             <a href="./customer" className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors">
-               <Users className="w-5 h-5" />
-               {isSidebarOpen && <span className="font-medium">Customers</span>}
-             </a>
-     
-             <a href="./policy-management" className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors">
-               <FileText className="w-5 h-5" />
-               {isSidebarOpen && <span>Policy Management</span>}
-             </a>
-     
-             <a href="./claims" className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors">
-               <ClipboardCheck className="w-5 h-5" />
-               {isSidebarOpen && <span>Claims Processing</span>}
-             </a>
-     
-             <a href="./reports" className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors">
-               <LineChart className="w-5 h-5" />
-               {isSidebarOpen && <span>Reports & Analytics</span>}
-             </a>
-     
-             <a
-               href="./settings"
-               className="flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors"
-             >
-               <Settings className="w-5 h-5" />
-               {isSidebarOpen && <span>Settings</span>}
-             </a>
-           </nav>
-     
-           <footer className="p-4 border-t border-blue-700 space-y-3">
-             <button onClick={handleLogout} disabled={isLoggingOut} className="w-full flex items-center gap-3 p-3 hover:bg-blue-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-               <LogOut className="w-5 h-5" />
-               {isSidebarOpen && <span>{isLoggingOut ? 'Signing Out...' : 'Sign Out'}</span>}
-             </button>
-             {isSidebarOpen ? (
-               <div className="text-center">
-                 <p className="text-xs text-white mt-1">© 2025 Bancassurance</p>
-               </div>
-             ) : (
-               <div className="text-center">
-                 <p className="text-xs text-blue-200">B.A</p>
-               </div>
-             )}
-           </footer>
-         </aside>
+ // Main Section
+return (
+  <div className="min-h-screen bg-gray-50">
 
-      <div className="flex-1 flex flex-col overflow-hidden">
-        
-        <header className="bg-white shadow-md border-b mb-1">
-          <div className="flex items-center justify-between px-6 py-4">
-            
-            <div className="flex items-center gap-4">
-              <h1 className="text-2xl font-semibold text-blue-600">Policy Management</h1>
-            </div>
+    {/* Page Container */}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Header Section */}
+      <div className="bg-white mt-4 border rounded-lg shadow-sm px-6 py-4">
+        <nav className="flex items-center justify-end gap-6 py-3">
+        {policyTabs.map((tab) => (
+          <Link
+            key={tab.id}
+            href={tab.href}
+            className={`pb-3 px-1 font-medium transition-colors ${
+              currentTab === tab.id
+                ? "text-blue-600 border-b-2 border-blue-600"
+                : "text-gray-500 hover:text-blue-700"
+            }`}
+          >
+            {tab.label}
+          </Link>
+        ))}
+        </nav>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
-            {/* Header Actions */}
-            <div className="flex items-center gap-4">
-              <button className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                <i className="fas fa-bell text-lg"></i>
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
-      
-              <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
-                <i className="fas fa-envelope text-lg"></i>
-              </button>
-
-              <div className="relative">
-                <button
-                  onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                >
-                  <div className="w-8 h-8 bg-linear-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-medium">AD</span>
-                  </div>
-                  <div className="text-left">
-                    <p className="text-sm font-medium text-gray-900">Admin User</p>
-                    <p className="text-xs text-gray-500">Administrator</p>
-                  </div>
-                  <i className="fas fa-chevron-down text-gray-500 text-xs"></i>
-                </button>
-
-                {isProfileOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                    <a href="#" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      <i className="fas fa-user text-gray-400"></i>
-                      My Profile
-                    </a>
-                    <a href="#" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      <i className="fas fa-cog text-gray-400"></i>
-                      Settings
-                    </a>
-                    <a href="#" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                      <i className="fas fa-question-circle text-gray-400"></i>
-                      Help & Support
-                    </a>
-                    <div className="border-t border-gray-200 my-1"></div>
-                    <button onClick={handleLogout} disabled={isLoggingOut} className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full text-left disabled:opacity-50 disabled:cursor-not-allowed">
-                      <i className="fas fa-sign-out-alt"></i>
-                      {isLoggingOut ? 'Signing Out...' : 'Sign Out'}
-                    </button>
-                  </div>
-                )}
-              </div>
+          {/* Left */}
+          <div className="flex items-center gap-3">
+            <i className={`${currentContent.icon} text-blue-600 text-xl`}></i>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">
+                {currentContent.title}
+              </h2>
+              <p className="text-sm text-gray-600 mt-1">
+                {currentContent.description}
+              </p>
             </div>
           </div>
-        </header>
-        
-        <div className="min-h-screen bg-gray-50">
-            {/* Tabs */}
-          <nav className="flex items-center justify-end gap-8 px-6 py-3 border-b border-gray-200 bg-white">
-            {policyTabs.map((tab) => (
-              <Link key={tab.id} href={tab.href} className={`pb-3 px-1 font-medium transition-colors ${currentTab === tab.id ? 'text-blue-600 border-b-2 border-blue-600': 'text-gray-500 hover:text-blue-700'}`}>
-            {tab.label}
-              </Link>
-            ))}
-          </nav>
 
-            {/* Tab Header */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <i className={`${currentContent.icon} text-blue-600 text-xl`}></i>
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900">{currentContent.title}</h2>
-                  <p className="text-sm text-gray-600 mt-1">{currentContent.description}</p>
-                </div>
-              </div>
+          {/* Right */}
           <div className="flex items-center gap-4">
             <div className="text-right">
-              <p className="text-sm font-medium text-gray-900">{currentContent.stats}</p>
-              <p className="text-xs text-gray-500 mt-1">Last updated: Just now</p>
+              <p className="text-sm font-medium text-gray-900">
+                {currentContent.stats}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Last updated: Just now
+              </p>
             </div>
+
             <button
               onClick={openModal}
-              className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg text-white transition-colors font-medium"
+              className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg text-white transition font-medium"
             >
               Add Policy
             </button>
@@ -325,67 +211,92 @@ export default function PolicyPage() {
         </div>
       </div>
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto">
-          <div className="p-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Policy Management</CardTitle>
-                  </CardHeader>
-                    <CardContent className="space-y-6">
-                      <div className="flex justify-between items-center">
-                        <Input placeholder="Search by customer or policy number" className="w-64" />
-                        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Search</button>
-                      </div>
+      {/* Content Section */}
+      <div className="mt-6">
+        <Card className="bg-white text-black max-w-max">
+          <CardHeader>
+            <CardTitle>Policy Management</CardTitle>
+          </CardHeader>
 
-                      <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                        <div className="overflow-x-auto">
-                          <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-blue-600 text-white text-medium font-semibold uppercase tracking-wider">
-                              <tr>
-                                <th scope="col" className="px-6 py-3 text-left">Policy #</th>
-                                <th scope="col" className="px-6 py-3 text-left">Customer</th>
-                                <th scope="col" className="px-6 py-3 text-left">Type</th>
-                                <th scope="col" className="px-6 py-3 text-left">Status</th>
-                                <th scope="col" className="px-6 py-3 text-left">Start</th>
-                                <th scope="col" className="px-6 py-3 text-left">End</th>
-                                <th scope="col" className="px-6 py-3 text-left">Premium</th>
-                                <th scope="col" className="px-6 py-3 text-left">Actions</th>
-                              </tr>
-                            </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
-                              {currentPolicies.map((policy) => (
-                                <tr key={policy.policyNumber} className="hover:bg-gray-50 transition-colors">
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{policy.policyNumber}</td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{policy.customer}</td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{policy.type}</td>
-                                  <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(policy.status)}</td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{policy.startDate}</td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{policy.endDate}</td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{policy.premium}</td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button className="text-blue-600 hover:text-blue-900 mr-3">View</button>
-                                    <button className="text-blue-600 hover:text-blue-900">Edit</button>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </CardContent>
-            </Card>
-          </div>
-        </main>
-      </div>
+          <CardContent className="space-y-6">
 
-        {/* Profile  */}
-        {isProfileOpen && (
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setIsProfileOpen(false)}
-          ></div>
-        )}
+            {/* Search Row */}
+            <div className="flex flex-col sm:flex-row justify-between gap-4 items-center">
+              <Input
+                placeholder="Search by customer or policy number"
+                className="w-full sm:w-64"
+              />
+              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Search
+              </button>
+            </div>
+{/* Table Responsive Wrapper */}
+<div className="bg-white rounded-xl shadow border w-full overflow-hidden">
+  <div className="w-full overflow-x-auto">
+    <table className="min-w-max table-auto divide-y divide-gray-200">
+      <thead className="bg-blue-600 text-white uppercase text-sm">
+        <tr>
+          <th className="px-4 py-3 text-left">Policy #</th>
+          <th className="px-4 py-3 text-left">Customer</th>
+          <th className="px-4 py-3 text-left">Type</th>
+          <th className="px-4 py-3 text-left">Status</th>
+          <th className="px-4 py-3 text-left">Start</th>
+          <th className="px-4 py-3 text-left">End</th>
+          <th className="px-4 py-3 text-left">Premium</th>
+          <th className="px-4 py-3 text-left">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody className="bg-white divide-y divide-gray-200">
+        {currentPolicies.map((policy) => (
+          <tr
+            key={policy.policyNumber}
+            className="hover:bg-gray-50 transition"
+          >
+            <td className="px-4 py-4 text-sm font-medium text-gray-900">
+              {policy.policyNumber}
+            </td>
+            <td className="px-4 py-4 text-sm">
+              {policy.customer}
+            </td>
+            <td className="px-4 py-4 text-sm">
+              {policy.type}
+            </td>
+            <td className="px-4 py-4">
+              {getStatusBadge(policy.status)}
+            </td>
+            <td className="px-4 py-4 text-sm text-gray-500">
+              {policy.startDate}
+            </td>
+            <td className="px-4 py-4 text-sm text-gray-500">
+              {policy.endDate}
+            </td>
+            <td className="px-4 py-4 text-sm">
+              {policy.premium}
+            </td>
+            <td className="px-4 py-4 text-sm font-medium">
+              <button className="text-blue-600 hover:text-blue-900 mr-3">
+                View
+              </button>
+              <button className="text-blue-600 hover:text-blue-900">
+                Edit
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+          </CardContent>
+        </Card>
       </div>
     </div>
-  );
+  </div>
+);
+
 }
