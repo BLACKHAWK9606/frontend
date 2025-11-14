@@ -11,6 +11,16 @@ export default function OtpPage() {
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+
+//    useEffect(() => {
+//   const accessToken = localStorage.getItem("accessToken");
+//   if (accessToken) {
+//     // Already logged in → redirect away
+//     router.replace("/");
+//   }
+// }, [router]);
+
+
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
@@ -19,7 +29,7 @@ export default function OtpPage() {
     e.preventDefault();
     setMessage(null);
 
-    const tempToken = localStorage.getItem("tempToken");
+    const tempToken = sessionStorage.getItem("tempToken");
     if (!tempToken) {
       setMessage("Missing temporary token. Please sign in again.");
       return;
@@ -51,16 +61,16 @@ export default function OtpPage() {
         return;
       }
 
-      // ✅ Success — store tokens if backend returns them
+      // Success — store tokens if backend returns them
       if (data?.accessToken) {
         sessionStorage.setItem("accessToken", data.accessToken);
         if (data?.refreshToken)
-          sessionStorage.setItem("refreshToken", data.refreshToken);
+          localStorage.setItem("refreshToken", data.refreshToken);
       }
 
-      sessionStorage.removeItem("tempToken");
+      localStorage.removeItem("tempToken");
       setMessage("✅ OTP verified! Redirecting...");
-      setTimeout(() => router.push("/customer"), 1000);
+      setTimeout(() => router.push("/banca/dashboard"), 1000);
     } catch (err) {
       console.error("OTP verification error:", err);
       setMessage("Network error — please try again later.");
