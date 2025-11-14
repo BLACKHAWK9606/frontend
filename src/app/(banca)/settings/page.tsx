@@ -42,6 +42,7 @@ export default function SettingsPage() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [theme, setTheme] = useState('light');
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -254,10 +255,14 @@ export default function SettingsPage() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Theme</label>
-                      <select className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option>Light</option>
-                        <option>Dark</option>
-                        <option>System Default</option>
+                      <select 
+                        value={theme} 
+                        onChange={(e) => setTheme(e.target.value)}
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="light">Light</option>
+                        <option value="dark">Dark</option>
+                        <option value="system">System Default</option>
                       </select>
                     </div>
                     <div>
