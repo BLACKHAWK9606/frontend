@@ -10,6 +10,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 
+
 type Activity = {
   id: string;
   name: string;
