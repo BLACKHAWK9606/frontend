@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className="bg-gray-50">
+      <body className="min-h-screen w-full bg-gray-50 text-gray-900 overflow-x-hidden antialiased">
         {children}
         <Toaster />
       </body>
