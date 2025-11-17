@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { toast } from "@/compoments/ui/toast";
+import { toast } from "@/components/ui/toast";
 
 export default function Header() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -65,10 +65,6 @@ export default function Header() {
   return (
     <header className="bg-white shadow-md border-b">
       <div className="flex items-center justify-between px-6 py-4">
-        
-        <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-semibold text-blue-600">Dashboard</h1>
-        </div>
 
         {/* Header Actions */}
         <div className="flex items-center gap-4">

@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 
-export default function RightSidebar() {
+export default function Notifications() {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
