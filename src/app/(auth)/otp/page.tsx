@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import AuthLayout from "../layout";
+import { toast } from "sonner";
 
 export default function OtpPage() {
   const router = useRouter();
@@ -29,8 +30,7 @@ export default function OtpPage() {
 
     setLoading(true);
     try {
-      const base = process.env.NEXT_PUBLIC_BASE_URL;
-      const res = await fetch(`${base}/auth/verify-login-otp`, {
+      const res = await fetch(`/auth/verify-login-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -62,9 +62,9 @@ export default function OtpPage() {
 
       sessionStorage.removeItem("tempToken");
       setMessage("✅ OTP verified! Redirecting...");
-      setTimeout(() => router.push("/banca/dashboard"), 1000);
-    } catch (err) {
-      console.error("OTP verification error:", err);
+      setTimeout(() => router.push("/dashboard"), 1000);
+    } catch (err:any) {
+      toast.error("OTP verification error:", err);
       setMessage("Network error — please try again later.");
     } finally {
       setLoading(false);

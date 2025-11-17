@@ -2,7 +2,8 @@
 
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import AuthLayout from "../layout";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 function validateEmail(email: string): { ok: boolean; message?: string } {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,7 +30,21 @@ export default function SignInPage() {
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [serverMsg, setServerMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const token = sessionStorage.getItem("accessToken") || "";
+  const [token, setToken] = useState("");
+      useEffect(() => {
+          try {
+                const token = sessionStorage.getItem("token");
+              if (!token) {
+                throw new Error("Access Token not found");
+             }
+             setToken(token);
+           } catch (error) {
+               const message =
+                error instanceof Error ? error.message : "An error occurred";
+                toast.error(message);
+            }
+         }, []);
+
 
 
 
@@ -50,7 +65,7 @@ export default function SignInPage() {
     // For EMAIL authType, validate format
     if (!useAD) {
       const e = validateEmail(form.identifier);
-      if (!e.ok) errs.identifier = e.message;
+      if (!e.ok) errs.identifier = e.message; 
     }
 
     setErrors(errs);
@@ -73,6 +88,7 @@ export default function SignInPage() {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
+          accept :"application/json", 
           Authorization: `Bearer ${token}`,
          },
         body: JSON.stringify(payload),
@@ -100,7 +116,7 @@ export default function SignInPage() {
         }
 
         setServerMsg("OTP sent! Redirecting to verification page...");
-        setTimeout(() => router.push("/authe/otp"), 800);
+        setTimeout(() => router.push("/otp"), 800);
       }
     } catch (err) {
       console.error("Network error", err);
@@ -191,7 +207,7 @@ export default function SignInPage() {
 
       <div className="text-center mt-4">
         <button
-          onClick={() => router.push("/authe/reset/request")}
+          onClick={() => router.push("/request")}
           className="text-sm text-gray-600 hover:text-blue-600 underline"
         >
           Forgot password?

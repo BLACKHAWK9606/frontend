@@ -15,8 +15,8 @@ import {
   ChevronRight,
 } from 'lucide-react';
 
-import {Card, CardHeader, CardTitle, CardContent} from '@/compoments/ui/card';
-import {Input} from '@/compoments/ui/input';
+import {Card, CardHeader, CardTitle, CardContent} from '@/components/ui/card';
+import {Input} from '@/components/ui/input';
 
 type Policy = {
   policyNumber: string;

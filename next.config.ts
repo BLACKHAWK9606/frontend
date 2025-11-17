@@ -38,6 +38,10 @@ const nextConfig: NextConfig = {
         source: "/auth/logout",
         destination: `${backendurl}/auth/logout`,
       },
+      {
+        source: "/auth/verify-login-otp",
+        destination: `${backendurl}/auth/verify-login-otp`,
+      },
     ];
   }
 };
