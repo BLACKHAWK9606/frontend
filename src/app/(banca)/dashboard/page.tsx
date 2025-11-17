@@ -1,9 +1,9 @@
 import Sidebar from './sidebar';
 import Header from './header';
-import StatCard from './statCard';
-import ChartSection from './ChartSection';
-import RecentActivity from './RecentActivities';
-import RightSidebar from './RightSidebar';
+import StatCard from './@Stats/page';
+import ChartSection from './@Charts/page';
+import RecentActivity from './@RecentActivities/page';
+import RightSidebar from './@Notifications/page';
 
 export default function DashboardPage() {
   const stats = [

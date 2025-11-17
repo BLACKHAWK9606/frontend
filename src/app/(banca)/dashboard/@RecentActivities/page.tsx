@@ -8,7 +8,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
-} from "@/shadcn/ui/table";
+} from "@/compoments/ui/table";
 
 
 type Activity = {
