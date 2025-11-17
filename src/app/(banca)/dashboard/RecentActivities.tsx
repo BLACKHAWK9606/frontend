@@ -9,7 +9,7 @@ import {
   TableRow,
   TableCell,
 
-} from "@/compoments/ui/table";
+} from "@/components/ui/table";
 
 
 

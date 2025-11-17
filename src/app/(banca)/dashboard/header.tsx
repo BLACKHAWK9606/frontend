@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { toast } from "@/compoments/ui/toast";
+import { toast } from "@/components/ui/toast";
 
 export default function Header() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);

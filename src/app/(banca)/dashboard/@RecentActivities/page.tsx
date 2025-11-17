@@ -8,12 +8,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
-<<<<<<<< HEAD:src/app/(banca)/dashboard/RecentActivities.tsx
 } from "@/components/ui/table";
-========
-} from "@/compoments/ui/table";
->>>>>>>> d0bd2ba147a9c1465648b71f2365e533600b92fd:src/app/(banca)/dashboard/@RecentActivities/page.tsx
-
 
 type Activity = {
   id: string;

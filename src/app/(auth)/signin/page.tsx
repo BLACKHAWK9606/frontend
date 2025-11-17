@@ -93,7 +93,7 @@ export default function SignInPage() {
         }
 
         setServerMsg("OTP sent! Redirecting to verification page...");
-        setTimeout(() => router.push("/authe/otp"), 800);
+        setTimeout(() => router.push("/otp"), 800);
       }
     } catch (err) {
       console.error("Network error", err);
@@ -184,7 +184,7 @@ export default function SignInPage() {
 
       <div className="text-center mt-4">
         <button
-          onClick={() => router.push("/authe/reset/request")}
+          onClick={() => router.push("/request")}
           className="text-sm text-gray-600 hover:text-blue-600 underline"
         >
           Forgot password?

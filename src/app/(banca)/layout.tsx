@@ -12,6 +12,7 @@ export default function GeneralLayout({
 }) {
    
   return (
+
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
@@ -32,6 +33,6 @@ export default function GeneralLayout({
       </SidebarInset>
       
     </SidebarProvider>
-        
+ 
   );
 }
