@@ -70,7 +70,7 @@ export default function OtpPage() {
 
       localStorage.removeItem("tempToken");
       setMessage("✅ OTP verified! Redirecting...");
-      setTimeout(() => router.push("/banca/dashboard"), 1000);
+      setTimeout(() => router.push("/dashboard"), 1000);
     } catch (err) {
       console.error("OTP verification error:", err);
       setMessage("Network error — please try again later.");

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { toast } from "@/compoments/ui/toast";
+import { toast } from "@/components/ui/toast";
 
 export default function Header() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -76,7 +76,6 @@ export default function Header() {
             <i className="fas fa-bell text-lg"></i>
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
-  
           <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
             <i className="fas fa-envelope text-lg"></i>
           </button>

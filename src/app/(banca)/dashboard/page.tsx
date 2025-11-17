@@ -15,11 +15,11 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-blue-50 text-black">
       <div className="flex">
-        <Sidebar />
+        
         <div className="flex-1 flex flex-col">
-          <Header />
+         
           <div className="flex flex-1">
-            <main className="flex-1 bg-gray-100 h-screen overflow-hidden">
+      
               <div className="h-full p-6 overflow-y-auto">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                   {stats.map((s, i) => (
@@ -31,8 +31,7 @@ export default function DashboardPage() {
                   <RecentActivity />
                 </div>
               </div>
-            </main>
-            <RightSidebar />
+            
           </div>
         </div>
       </div>
