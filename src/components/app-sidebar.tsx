@@ -282,7 +282,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
+        <SidebarMenu >
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/dashboard">
@@ -290,10 +290,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <Command className="size-4" />
             
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Bancassurance</span>
+                <div className="grid flex-1 text-left text-lg leading-tight">
+                  <span className="truncate font-semibold">Bancassurance</span>
                   <span className="truncate text-xs">Insurance</span>
                 </div>
+              </Link>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

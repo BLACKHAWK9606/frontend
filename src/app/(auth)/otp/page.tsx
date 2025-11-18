@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import AuthLayout from "../layout/authlayout";
+import AuthLayout from "../layout";
+import { toast } from "sonner";
 
 export default function OtpPage() {
   const router = useRouter();
@@ -12,14 +13,6 @@ export default function OtpPage() {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
 
-//    useEffect(() => {
-//   const accessToken = localStorage.getItem("accessToken");
-//   if (accessToken) {
-//     // Already logged in → redirect away
-//     router.replace("/");
-//   }
-// }, [router]);
-
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -27,34 +20,33 @@ export default function OtpPage() {
 
   async function handleVerify(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setMessage(null);
+    toast.error(null);
 
     const tempToken = sessionStorage.getItem("tempToken");
     if (!tempToken) {
-      setMessage("Missing temporary token. Please sign in again.");
+      toast.error("Missing temporary token. Please sign in again.");
       return;
     }
 
     setLoading(true);
     try {
-      const base = process.env.NEXT_PUBLIC_BASE_URL;
-      const res = await fetch(`${base}/auth/verify-login-otp`, {
+      const res = await fetch(`/auth/verify-login-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          tempToken,      // ✅ matches Swagger
-          otpCode: otp,   // ✅ matches Swagger
+          tempToken,      
+          otpCode: otp,   
         }),
       });
 
-      const text = await res.text();
-      let data: any;
-      try {
-        data = text ? JSON.parse(text) : {};
-      } catch {
-        data = { message: text };
-      }
+      let data;
+        try {
+             data = await res.json();     
+        } catch {
+             const text = await res.text(); 
+              data = { message: text };
+        }
 
       if (!res.ok) {
         setMessage(data?.message || `Verification failed (${res.status})`);
@@ -65,22 +57,21 @@ export default function OtpPage() {
       if (data?.accessToken) {
         sessionStorage.setItem("accessToken", data.accessToken);
         if (data?.refreshToken)
-          localStorage.setItem("refreshToken", data.refreshToken);
+          sessionStorage.setItem("refreshToken", data.refreshToken);
       }
 
-      localStorage.removeItem("tempToken");
-      setMessage("✅ OTP verified! Redirecting...");
-      setTimeout(() => router.push("/dashboard"), 1000);
-    } catch (err) {
-      console.error("OTP verification error:", err);
-      setMessage("Network error — please try again later.");
+      sessionStorage.removeItem("tempToken");
+      toast.error("✅ OTP verified! Redirecting...");
+    } catch (err:any) {
+      toast.error("OTP verification error:", err);
+      toast.error("Network error — please try again later.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <AuthLayout>
+    
       <div className="bg-white p-6 rounded-2xl shadow">
           <h1 className="text-xl sm:text-2xl font-semibold mb-3 text-center">
             Verify OTP
@@ -130,6 +121,6 @@ export default function OtpPage() {
             </button>
           </div>
         </div>
-    </AuthLayout>
+    
   );
 }
