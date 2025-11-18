@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import * as React from "react";
 import {
   BookOpen,
   Bot,
@@ -12,12 +12,12 @@ import {
   Send,
   Settings2,
   SquareTerminal,
-} from "lucide-react"
+  ChevronDown,
+  ChevronRight,
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavProjects } from "@/components/nav-projects";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -26,8 +26,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { title } from "process"
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+} from "@/components/ui/sidebar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import Link from "next/link";
 
 const data = {
   user: {
@@ -41,16 +45,7 @@ const data = {
       url: "./dashboard",
       icon: BookOpen,
     },
-    {
-      title: "Customer",
-      url: "./customer",
-      icon: BookOpen,
-    },
-    {
-      title: "Policy Management",
-      url: "./policy-management",
-      icon: BookOpen,
-    },
+
     {
       title: "Set ups",
       url: "#",
@@ -116,6 +111,16 @@ const data = {
 
         },
       ],
+    },   
+    {
+      title: "Claims",
+      url: "./claims",
+      icon: BookOpen,
+    },
+    {
+      title: "Policy Management",
+      url: "./policy-management",
+      icon: BookOpen,
     },
     {
       title: "Underwriters & Clients",
@@ -164,13 +169,18 @@ const data = {
       ],
     },
     {
+      title: "Reports & Analytics",
+      url: "./reports",
+      icon: PieChart,
+    },
+    {
       title: "Settings",
       url: "#",
       icon: Settings2,
       items: [
         {
           title: "General",
-          url: "#",
+          url: "./settings",
         },
         {
           title: "Team",
@@ -202,6 +212,72 @@ const data = {
 
 }
 
+// ---NAV COMPONENTS ---
+function NavMain({ items}: {items: typeof data.navMain}) {
+  const [openItems, setOpenItems] = React.useState<Record<string, boolean>>({});
+
+  const toggleItem = (title: string) => {
+    setOpenItems(prev => ({ ...prev, [title]: !prev[title] }));
+  };
+
+  return (
+    <SidebarMenu>
+      {items.map((item) => (
+        <SidebarMenuItem key={item.title}>
+          {item.items ? (
+            <Collapsible open={openItems[item.title]} onOpenChange={() => toggleItem(item.title)}>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton>
+                  <item.icon className="size-4"/>
+                  <span>{item.title}</span>
+                  {openItems[item.title] ? <ChevronDown className="ml-auto size-4"/> : <ChevronRight className="ml-auto size-4"/>}
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  {item.items.map((sub) => (
+                    <SidebarMenuSubItem key={sub.title}>
+                      <SidebarMenuSubButton asChild>
+                        <Link href={sub.url}>
+                          <span>{sub.title}</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </Collapsible>
+          ) : (
+            <SidebarMenuButton asChild>
+              <Link href={item.url}>
+                <item.icon className="size-4"/>
+                <span>{item.title}</span>
+              </Link>
+            </SidebarMenuButton>
+          )}
+        </SidebarMenuItem>
+      ))}
+    </SidebarMenu>
+  )
+}
+
+function NavSecondary({items, className}: {items: typeof data.navSecondary, className?: string}) {
+  return (
+    <SidebarMenu className={className}>
+      {items.map((item) => (
+        <SidebarMenuItem key={item.title}>
+          <SidebarMenuButton asChild>
+            <Link href={item.url}>
+              <item.icon className="size-4"/>
+              <span>{item.title}</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      ))}
+    </SidebarMenu>
+  )
+}
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="inset" {...props}>
@@ -209,7 +285,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <Link href="/dashboard">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <Command className="size-4" />
             
@@ -218,7 +294,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span className="truncate font-medium">Bancassurance</span>
                   <span className="truncate text-xs">Insurance</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -228,7 +304,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={data.user}/>
       </SidebarFooter>
     </Sidebar>
   )
