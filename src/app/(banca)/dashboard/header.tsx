@@ -65,10 +65,6 @@ export default function Header() {
   return (
     <header className="bg-white shadow-md border-b">
       <div className="flex items-center justify-between px-6 py-4">
-        
-        <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-semibold text-blue-600">Dashboard</h1>
-        </div>
 
         {/* Header Actions */}
         <div className="flex items-center gap-4">
@@ -76,7 +72,6 @@ export default function Header() {
             <i className="fas fa-bell text-lg"></i>
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
-  
           <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
             <i className="fas fa-envelope text-lg"></i>
           </button>

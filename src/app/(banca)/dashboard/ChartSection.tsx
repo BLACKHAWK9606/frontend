@@ -1,10 +1,15 @@
 'use client';
 import { useEffect, useState } from 'react';
+<<<<<<<< HEAD:src/app/(banca)/dashboard/ChartSection.tsx
 import {Table, TableHeader, TableHead, TableBody, TableRow, TableCell} from '@/components/ui/table';
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
+========
+import {Table, TableHeader, TableHead, TableBody, TableRow, TableCell} from '@/compoments/ui/table';
+import {Card, CardContent, CardHeader, CardTitle} from '@/compoments/ui/card';
+>>>>>>>> d0bd2ba147a9c1465648b71f2365e533600b92fd:src/app/(banca)/dashboard/@Charts/page.tsx
 import Image from 'next/image';
 
-export default function Charts() {
+export default function ChartSection() {
   const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
 
