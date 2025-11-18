@@ -5,12 +5,16 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useEffect } from "react";
 
-function validateEmail(email: string): { ok: boolean; message?: string } {
+function validateEmail(email: string) {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email)
-    ? { ok: true }
-    : { ok: false, message: "Invalid email format" };
+
+  if (!regex.test(email)) {
+    return { ok: false, message: "Invalid email format" };
+  }
+
+  return { ok: true };
 }
+
 
 interface FormData {
   identifier: string;
@@ -31,19 +35,21 @@ export default function SignInPage() {
   const [serverMsg, setServerMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [token, setToken] = useState("");
-      useEffect(() => {
-          try {
-                const token = sessionStorage.getItem("token");
-              if (!token) {
-                throw new Error("Access Token not found");
-             }
-             setToken(token);
-           } catch (error) {
-               const message =
-                error instanceof Error ? error.message : "An error occurred";
-                toast.error(message);
-            }
-         }, []);
+  useEffect(() => {
+    try {
+
+      const token = sessionStorage.getItem("token");
+      if (!token) {
+        throw new Error("Access Token not found");
+      }
+      setToken(token);
+            
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast.error(message);
+    }
+
+    }, []);
 
 
 
@@ -96,13 +102,13 @@ export default function SignInPage() {
       }
     );
 
-      const responseText = await res.text();
       let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch {
-        data = { message: responseText };
-      }
+        try {
+             data = await res.json();     
+        } catch {
+             const text = await res.text(); 
+              data = { message: text };
+        }
 
       if (!res.ok) {
         setServerMsg(data?.message || `Sign in failed (${res.status})`);

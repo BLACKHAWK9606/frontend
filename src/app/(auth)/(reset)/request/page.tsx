@@ -23,7 +23,7 @@ export default function ResetRequestPage() {
   }
 
   return (
-    <AuthLayout>
+    
       <div className="bg-white rounded-2xl shadow p-6">
         <h1 className="text-2xl font-semibold mb-2 text-center">
           Reset password
@@ -73,6 +73,6 @@ export default function ResetRequestPage() {
           </button>
         </div>
       </div>
-    </AuthLayout>
+    
   ); 
 }

@@ -20,11 +20,11 @@ export default function OtpPage() {
 
   async function handleVerify(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setMessage(null);
+    toast.error(null);
 
     const tempToken = sessionStorage.getItem("tempToken");
     if (!tempToken) {
-      setMessage("Missing temporary token. Please sign in again.");
+      toast.error("Missing temporary token. Please sign in again.");
       return;
     }
 
@@ -40,13 +40,13 @@ export default function OtpPage() {
         }),
       });
 
-      const text = await res.text();
-      let data: any;
-      try {
-        data = text ? JSON.parse(text) : {};
-      } catch {
-        data = { message: text };
-      }
+      let data;
+        try {
+             data = await res.json();     
+        } catch {
+             const text = await res.text(); 
+              data = { message: text };
+        }
 
       if (!res.ok) {
         setMessage(data?.message || `Verification failed (${res.status})`);
@@ -61,11 +61,10 @@ export default function OtpPage() {
       }
 
       sessionStorage.removeItem("tempToken");
-      setMessage("✅ OTP verified! Redirecting...");
-      setTimeout(() => router.push("/dashboard"), 1000);
+      toast.error("✅ OTP verified! Redirecting...");
     } catch (err:any) {
       toast.error("OTP verification error:", err);
-      setMessage("Network error — please try again later.");
+      toast.error("Network error — please try again later.");
     } finally {
       setLoading(false);
     }
