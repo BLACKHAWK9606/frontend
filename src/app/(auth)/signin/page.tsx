@@ -2,14 +2,19 @@
 
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import AuthLayout from "../layout/authlayout";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
-function validateEmail(email: string): { ok: boolean; message?: string } {
+function validateEmail(email: string) {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(email)
-    ? { ok: true }
-    : { ok: false, message: "Invalid email format" };
+
+  if (!regex.test(email)) {
+    return { ok: false, message: "Invalid email format" };
+  }
+
+  return { ok: true };
 }
+
 
 interface FormData {
   identifier: string;
@@ -29,6 +34,25 @@ export default function SignInPage() {
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [serverMsg, setServerMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState("");
+  useEffect(() => {
+    try {
+
+      const token = sessionStorage.getItem("token");
+      if (!token) {
+        throw new Error("Access Token not found");
+      }
+      setToken(token);
+            
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast.error(message);
+    }
+
+    }, []);
+
+
+
 
   function onChange(e: ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -47,7 +71,7 @@ export default function SignInPage() {
     // For EMAIL authType, validate format
     if (!useAD) {
       const e = validateEmail(form.identifier);
-      if (!e.ok) errs.identifier = e.message;
+      if (!e.ok) errs.identifier = e.message; 
     }
 
     setErrors(errs);
@@ -66,20 +90,25 @@ export default function SignInPage() {
         authType: useAD ? "ACTIVE_DIRECTORY" : "EMAIL",
       };
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`, {
+      const res = await fetch("/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          accept :"application/json", 
+          Authorization: `Bearer ${token}`,
+         },
         body: JSON.stringify(payload),
         credentials: "include",
-      });
-
-      const responseText = await res.text();
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch {
-        data = { message: responseText };
       }
+    );
+
+      let data;
+        try {
+             data = await res.json();     
+        } catch {
+             const text = await res.text(); 
+              data = { message: text };
+        }
 
       if (!res.ok) {
         setServerMsg(data?.message || `Sign in failed (${res.status})`);
