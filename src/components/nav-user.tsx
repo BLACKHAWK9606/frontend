@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import {
   BadgeCheck,
   Bell,
@@ -40,6 +41,41 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true)
+    try {
+      const token = sessionStorage.getItem('token')
+      if (!token) {
+        sessionStorage.clear()
+        window.location.href = '/'
+        return
+      }
+      const response = await fetch('/auth/logout', {
+        method: 'POST',
+        headers: {
+          'accept': '*/*',
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      if (response.ok) {
+        sessionStorage.removeItem('token')
+        sessionStorage.removeItem('calendly-store')
+        sessionStorage.removeItem('calendly-internal-store')
+        window.location.href = '/'
+      } else {
+        sessionStorage.clear()
+        window.location.href = '/'
+      }
+    } catch (error) {
+      sessionStorage.clear()
+      window.location.href = '/'
+    } finally {
+      setIsLoggingOut(false)
+    }
+  }
 
   return (
     <SidebarMenu>
@@ -91,9 +127,9 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout} disabled={isLoggingOut}>
               <LogOut />
-              Log out
+              {isLoggingOut ? 'Signing Out...' : 'Log out'}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
