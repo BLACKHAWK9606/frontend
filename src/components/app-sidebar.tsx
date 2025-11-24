@@ -5,18 +5,14 @@ import {
   BookOpen,
   Bot,
   Command,
-  Frame,
   LifeBuoy,
-  Map,
   PieChart,
   Send,
   Settings2,
-  SquareTerminal,
   ChevronDown,
   ChevronRight,
 } from "lucide-react";
 
-import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
@@ -45,7 +41,6 @@ const data = {
       url: "./dashboard",
       icon: BookOpen,
     },
-
     {
       title: "Set ups",
       url: "#",
@@ -53,15 +48,15 @@ const data = {
       items: [
         {
           title: "Organization Setups",
-          url: "#",
+          url: "./organization-setup",
         },
         {
           title: "Underwriting Setups",
-          url: "#",
+          url: "./underwriting-setup",
         },
         {
           title: "Finance Setups",
-          url: "#",
+          url: "./finance-setup",
         },
       ],
     },
@@ -91,24 +86,23 @@ const data = {
       items: [
         {
           title: "Prospects",
-          url: "#",
+          url: "./prospects",
         },
         {
           title: "New Quote",
-          url: "#",
+          url: "./new-quote",
         },
         {
           title: "Medical Quote",
-          url: "#",
+          url: "./medical-quote",
         },
         {
           title: "Quote Enquiry",
-          url: "#",
+          url: "./quote-enquiry",
         },
         {
           title: "Convert Quotes",
-          url: "#",
-
+          url: "./convert",
         },
       ],
     },   
@@ -129,11 +123,11 @@ const data = {
       items: [
         {
           title: "Insurers/Sub Agents",
-          url: "#",
+          url: "./insurers",
         },
         {
           title: "Clients",
-          url: "#",
+          url: "./clients",
         },
       ],
     },
@@ -144,27 +138,27 @@ const data = {
       items: [
         {
           title: "Lapse Policies",
-          url: "#",
+          url: "./lapse-policy",
         },
         {
           title: "Policy Enquiry",
-          url: "#",
+          url: "./policy-enquiry",
         },
         {
-          title: "Pending Trans",
-          url: "#",
+          title: "Pending Transactions",
+          url: "./pending-trans",
         },
         {
           title: "Renewals",
-          url: "#",
+          url: "./renewals",
         },
         {
           title: "Refunds",
-          url: "#",
+          url: "./refunds",
         },
         {
           title: "Transactions Reconcilliation",
-          url: "#",
+          url: "./trans-recon",
         },
       ],
     },
@@ -175,65 +169,75 @@ const data = {
     },
     {
       title: "Settings",
-      url: "#",
+      url: "./settings",
       icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "./settings",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
     },
   ],
   navSecondary: [
     {
       title: "Support",
-      url: "#",
+      url: "./support",
       icon: LifeBuoy,
     },
     {
       title: "Feedback",
-      url: "#",
+      url: "./feedback",
       icon: Send,
     },
   ],
-
-}
+};
 
 // ---NAV COMPONENTS ---
-function NavMain({ items}: {items: typeof data.navMain}) {
+function NavMain({ items }: { items: typeof data.navMain }) {
   const [openItems, setOpenItems] = React.useState<Record<string, boolean>>({});
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleItem = (title: string) => {
     setOpenItems(prev => ({ ...prev, [title]: !prev[title] }));
   };
+
+  if (!mounted) {
+    return (
+      <SidebarMenu>
+        {items.map((item) => (
+          <SidebarMenuItem key={item.title}>
+            <SidebarMenuButton asChild>
+              <Link href={item.url}>
+                <item.icon className="size-4" />
+                <span>{item.title}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        ))}
+      </SidebarMenu>
+    );
+  }
 
   return (
     <SidebarMenu>
       {items.map((item) => (
         <SidebarMenuItem key={item.title}>
           {item.items ? (
-            <Collapsible open={openItems[item.title]} onOpenChange={() => toggleItem(item.title)}>
+            <Collapsible 
+              open={openItems[item.title]} 
+              onOpenChange={() => toggleItem(item.title)}
+            >
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton>
-                  <item.icon className="size-4"/>
+                <SidebarMenuButton suppressHydrationWarning>
+                  <item.icon className="size-4" />
                   <span>{item.title}</span>
-                  {openItems[item.title] ? <ChevronDown className="ml-auto size-4"/> : <ChevronRight className="ml-auto size-4"/>}
+                  {openItems[item.title] ? (
+                    <ChevronDown className="ml-auto size-4" />
+                  ) : (
+                    <ChevronRight className="ml-auto size-4" />
+                  )}
                 </SidebarMenuButton>
               </CollapsibleTrigger>
-              <CollapsibleContent>
+              <CollapsibleContent suppressHydrationWarning>
                 <SidebarMenuSub>
                   {item.items.map((sub) => (
                     <SidebarMenuSubItem key={sub.title}>
@@ -250,7 +254,7 @@ function NavMain({ items}: {items: typeof data.navMain}) {
           ) : (
             <SidebarMenuButton asChild>
               <Link href={item.url}>
-                <item.icon className="size-4"/>
+                <item.icon className="size-4" />
                 <span>{item.title}</span>
               </Link>
             </SidebarMenuButton>
@@ -258,43 +262,47 @@ function NavMain({ items}: {items: typeof data.navMain}) {
         </SidebarMenuItem>
       ))}
     </SidebarMenu>
-  )
+  );
 }
 
-function NavSecondary({items, className}: {items: typeof data.navSecondary, className?: string}) {
+function NavSecondary({ 
+  items, 
+  className 
+}: { 
+  items: typeof data.navSecondary; 
+  className?: string;
+}) {
   return (
     <SidebarMenu className={className}>
       {items.map((item) => (
         <SidebarMenuItem key={item.title}>
           <SidebarMenuButton asChild>
             <Link href={item.url}>
-              <item.icon className="size-4"/>
+              <item.icon className="size-4" />
               <span>{item.title}</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
       ))}
     </SidebarMenu>
-  )
+  );
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar variant="inset" {...props} suppressHydrationWarning>
       <SidebarHeader>
-        <SidebarMenu >
+        <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/dashboard">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                   <Command className="size-4" />
-            
                 </div>
                 <div className="grid flex-1 text-left text-lg leading-tight">
                   <span className="truncate font-semibold">Bancassurance</span>
                   <span className="truncate text-xs">Insurance</span>
                 </div>
-              </Link>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -305,8 +313,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user}/>
+        <NavUser user={data.user} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }

@@ -5,7 +5,7 @@
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --foreground: oklch(14.479% 0.00002 271.152);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -35,6 +35,7 @@
   --sidebar-accent-foreground: oklch(86.995% 0.0001 271.152);
   --sidebar-border: oklch(92.191% 0.0001 271.152);
   --sidebar-ring: oklch(0.708 0 0);
+  
 
 }
 
@@ -97,17 +98,6 @@
     color: var(--foreground);
   }
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
 
 

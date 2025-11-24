@@ -4,9 +4,28 @@ import {Table, TableHeader, TableHead, TableBody, TableRow, TableCell} from '@/c
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import Image from 'next/image';
 
+interface Product{
+  id: number;
+  title: string;
+  thumbnail: string;
+}
+
+interface User{
+  id: number;
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  phone: string;
+  image: string;
+  company?: {
+    title: string;
+  };
+}
+
 export default function Charts() {
   const [products, setProducts] = useState([]);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
     // Fetch insurance products
@@ -15,9 +34,15 @@ export default function Charts() {
       .then(data => setProducts(data.products.slice(0, 4))); // Limit to 4 items
 
     // Fetch user engagement data
-    fetch('https://dummyjson.com/users')
+    const backendurl = process.env.NEXT_PUBLIC_BASE_URL; // Assuming NEXT_PUBLIC_BASE_URL is defined in environment variables
+    if (!backendurl) {
+      console.error("NEXT_PUBLIC_BASE_URL is not defined in environment variables");
+      return;
+    }
+    fetch(`${backendurl}/api/users/profile`)
       .then(res => res.json())
-      .then(data => setUsers(data.users.slice(0, 6))); // Limit to 6 users
+      .then(data => setUsers(data))
+      .catch(error => console.error("Error fetching user data:", error));
   }, []);
 
   return (
@@ -52,7 +77,7 @@ export default function Charts() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users.map((user: any) => (
+            {Array.isArray(users) && users.map((user) => (
            <TableRow key={user.id}>
               <TableCell>
                 <Image src={user.image} alt={user.firstName} width={40} height={40} className="rounded-full"/>

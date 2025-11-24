@@ -1,300 +1,465 @@
-"use client";
+'use client'; 
+import { useState } from 'react'; 
+import { useSearchParams } from 'next/navigation'; 
+import Link from 'next/link'; 
+import {Card, CardHeader, CardTitle, CardContent} from '@/components/ui/card'; 
+import {Input} from '@/components/ui/input'; 
 
-import { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
+type Policy = { 
+  id: number;
+  policyNumber: string; 
+  customer: string; 
+  type: string; 
+  status: string; 
+  startDate: string; 
+  endDate: string; 
+  premium: string; 
+}; 
 
-export default function CustomerPage() {
+type ModalType = 'view' | 'edit' | 'add' | null;
+
+export default function PolicyPage() { 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<ModalType>(null);
+  const [selectedPolicy, setSelectedPolicy] = useState<Policy | null>(null);
+  const [formData, setFormData] = useState<Partial<Policy> | null>(null);
+  
   const searchParams = useSearchParams();
   const currentTab = searchParams.get('tab') || 'all';
 
-  // Tab configuration
-  const tabs = [
-    { id: 'all', label: 'All Customers', href: '?tab=all' },
-    { id: 'new', label: 'New Customers', href: '?tab=new' },
-    { id: 'active', label: 'Active', href: '?tab=active' },
-    { id: 'inactive', label: 'Inactive', href: '?tab=inactive' },
-    { id: 'archived', label: 'Archived', href: '?tab=archived' },
-  ];
+  const policyTabs = [ 
+    { id: 'all', label: 'All Policies', href: '?tab=all' }, 
+    { id: 'active', label: 'Active', href: '?tab=active' }, 
+    { id: 'expired', label: 'Expired', href: '?tab=expired' }, 
+    { id: 'pending', label: 'Pending', href: '?tab=pending' }, 
+    { id: 'cancelled', label: 'Cancelled', href: '?tab=cancelled' }, 
+  ]; 
 
-  // Tab content configuration
-  const tabContent = {
-    all: {
-      title: "All Customers",
-      description: "View and manage all customers across all statuses",
-      stats: "Total customers: 1,234",
-      icon: "fas fa-users"
-    },
-    new: {
-      title: "New Customers",
-      description: "Recently registered customers awaiting activation",
-      stats: "New signups: 42",
-      icon: "fas fa-user-plus"
-    },
-    active: {
-      title: "Active Customers",
-      description: "Customers with active policies and subscriptions",
-      stats: "Active customers: 856",
-      icon: "fas fa-user-check"
-    },
-    inactive: {
-      title: "Inactive Customers",
-      description: "Customers with expired or suspended policies",
-      stats: "Inactive customers: 198",
-      icon: "fas fa-user-clock"
-    },
-    archived: {
-      title: "Archived Customers",
-      description: "Customers who have been archived or deleted",
-      stats: "Archived customers: 138",
-      icon: "fas fa-archive"
+  const policyTabContent = { 
+    all: { title: "All Policies", description: "View and manage all issued policies across all statuses", stats: "Total policies: 1,024", icon: "fas fa-file-alt" }, 
+    active: { title: "Active Policies", description: "Policies currently in force and up to date", stats: "Active: 768", icon: "fas fa-check-circle" }, 
+    expired: { title: "Expired Policies", description: "Policies that have reached their end date", stats: "Expired: 112", icon: "fas fa-calendar-times" }, 
+    pending: { title: "Pending Policies", description: "Policies awaiting approval or payment", stats: "Pending: 98", icon: "fas fa-hourglass-half" }, 
+    cancelled: { title: "Cancelled Policies", description: "Policies terminated before maturity", stats: "Cancelled: 46", icon: "fas fa-ban" } 
+  }; 
+
+  const policyData = { 
+    all: [ 
+      { id: 1, policyNumber: "POL-001", customer: "Chiamaka Adebayo", type: "Life", status: "Active", startDate: "2023-01-01", endDate: "2028-01-01", premium: "KES 5,000/month" }, 
+      { id: 2, policyNumber: "POL-002", customer: "James Smith", type: "Health", status: "Pending", startDate: "2024-04-01", endDate: "2025-04-01", premium: "KES 3,200/month" }, 
+      { id: 3, policyNumber: "POL-003", customer: "Naledi Moloi", type: "Motor", status: "Active", startDate: "2023-11-01", endDate: "2024-11-01", premium: "KES 2,500/month" }, 
+      { id: 4, policyNumber: "POL-004", customer: "Emma Wilson", type: "Travel", status: "Expired", startDate: "2022-06-01", endDate: "2023-06-01", premium: "KES 1,000/one-time" }, 
+      { id: 5, policyNumber: "POL-005", customer: "Kwame Asante", type: "Life", status: "Cancelled", startDate: "2024-01-01", endDate: "2029-01-01", premium: "KES 4,800/month" } 
+    ], 
+    active: [ 
+      { id: 1, policyNumber: "POL-001", customer: "Chiamaka Adebayo", type: "Life", status: "Active", startDate: "2023-01-01", endDate: "2028-01-01", premium: "KES 5,000/month" }, 
+      { id: 3, policyNumber: "POL-003", customer: "Naledi Moloi", type: "Motor", status: "Active", startDate: "2023-11-01", endDate: "2024-11-01", premium: "KES 2,500/month" } 
+    ], 
+    expired: [ 
+      { id: 4, policyNumber: "POL-004", customer: "Emma Wilson", type: "Travel", status: "Expired", startDate: "2022-06-01", endDate: "2023-06-01", premium: "KES 1,000/one-time" } 
+    ], 
+    pending: [ 
+      { id: 2, policyNumber: "POL-002", customer: "James Smith", type: "Health", status: "Pending", startDate: "2024-04-01", endDate: "2025-04-01", premium: "KES 3,200/month" } 
+    ], 
+    cancelled: [ 
+      { id: 5, policyNumber: "POL-005", customer: "Kwame Asante", type: "Life", status: "Cancelled", startDate: "2024-01-01", endDate: "2029-01-01", premium: "KES 4,800/month" } 
+    ] 
+  }; 
+
+  const currentContent = policyTabContent[currentTab as keyof typeof policyTabContent] || policyTabContent.all; 
+  const currentPolicies = policyData[currentTab as keyof typeof policyData] || policyData.all; 
+
+  const openAddModal = () => {
+    setModalType('add');
+    setFormData({
+      policyNumber: '',
+      customer: '',
+      type: 'Life',
+      status: 'Active',
+      startDate: '',
+      endDate: '',
+      premium: ''
+    });
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalType(null);
+    setSelectedPolicy(null);
+    setFormData(null);
+  }; 
+
+  const openViewModal = (policy: Policy) => {
+    setSelectedPolicy(policy);
+    setModalType('view');
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (policy: Policy) => {
+    setSelectedPolicy(policy);
+    setFormData({ ...policy });
+    setModalType('edit');
+    setIsModalOpen(true);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => prev ? { ...prev, [name]: value } : null);
+  };
+
+  const handleSavePolicy = () => {
+    if (formData) {
+      // Here you would typically make an API call to save/update the policy
+      console.log('Saving policy:', formData);
+      const action = modalType === 'add' ? 'added' : 'updated';
+      alert(`Policy ${formData.policyNumber} ${action} successfully!`);
+      closeModal();
     }
   };
 
-  
-  const customerData = {
-    all: [
-      { id: 1, name: "Chiamaka Adebayo", email: "chiamaka.adebayo@example.com", phone: "(555) 123-4567", status: "Active", type: "Premium Member", joinDate: "2024-01-15" },
-      { id: 2, name: "James Smith", email: "james.smith@example.com", phone: "(555) 987-6543", status: "Pending", type: "Standard Member", joinDate: "2024-03-10" },
-      { id: 3, name: "Naledi Moloi", email: "naledi.moloi@example.com", phone: "(555) 456-7890", status: "Active", type: "VIP Member", joinDate: "2023-11-22" },
-      { id: 4, name: "Emma Wilson", email: "emma.wilson@example.com", phone: "(555) 234-5678", status: "Inactive", type: "Standard Member", joinDate: "2023-08-05" },
-      { id: 5, name: "Kwame Asante", email: "kwame.asante@example.com", phone: "(555) 345-6789", status: "Active", type: "Premium Member", joinDate: "2024-02-18" }
-    ],
-    new: [
-      { id: 2, name: "James Smith", email: "james.smith@example.com", phone: "(555) 987-6543", status: "Pending", type: "Standard Member", joinDate: "2024-03-10" },
-      { id: 6, name: "Fatoumata Diallo", email: "fatoumata.diallo@example.com", phone: "(555) 567-8901", status: "Pending", type: "Premium Member", joinDate: "2024-03-12" },
-      { id: 7, name: "Sarah Johnson", email: "sarah.johnson@example.com", phone: "(555) 678-9012", status: "Pending", type: "Standard Member", joinDate: "2024-03-11" }
-    ],
-    active: [
-      { id: 1, name: "Chiamaka Adebayo", email: "chiamaka.adebayo@example.com", phone: "(555) 123-4567", status: "Active", type: "Premium Member", joinDate: "2024-01-15" },
-      { id: 3, name: "Naledi Moloi", email: "naledi.moloi@example.com", phone: "(555) 456-7890", status: "Active", type: "VIP Member", joinDate: "2023-11-22" },
-      { id: 5, name: "Kwame Asante", email: "kwame.asante@example.com", phone: "(555) 345-6789", status: "Active", type: "Premium Member", joinDate: "2024-02-18" },
-      { id: 8, name: "David Brown", email: "david.brown@example.com", phone: "(555) 789-0123", status: "Active", type: "VIP Member", joinDate: "2023-12-18" }
-    ],
-    inactive: [
-      { id: 4, name: "Emma Wilson", email: "emma.wilson@example.com", phone: "(555) 234-5678", status: "Inactive", type: "Standard Member", joinDate: "2023-08-05" },
-      { id: 9, name: "Amina Jalloh", email: "amina.jalloh@example.com", phone: "(555) 890-1234", status: "Inactive", type: "Premium Member", joinDate: "2023-09-30" }
-    ],
-    archived: [
-      { id: 10, name: "Thomas Green", email: "thomas.green@example.com", phone: "(555) 901-2345", status: "Archived", type: "Standard Member", joinDate: "2022-05-15" },
-      { id: 11, name: "Zara Nkosi", email: "zara.nkosi@example.com", phone: "(555) 012-3456", status: "Archived", type: "Premium Member", joinDate: "2022-11-20" },
-      { id: 12, name: "Robert Taylor", email: "robert.taylor@example.com", phone: "(555) 123-4567", status: "Archived", type: "Standard Member", joinDate: "2022-07-14" }
-    ]
+  const getModalTitle = () => {
+    switch (modalType) {
+      case 'view': return 'Policy Details';
+      case 'edit': return 'Edit Policy';
+      case 'add': return 'Add New Policy';
+      default: return 'Policy';
+    }
   };
 
-  const currentContent = tabContent[currentTab as keyof typeof tabContent] || tabContent.all;
-  const currentCustomers = customerData[currentTab as keyof typeof customerData] || customerData.all;
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
-  const getStatusBadge = (status: string) => {
-    const statusStyles = {
-      Active: "bg-green-100 text-green-800",
-      Pending: "bg-yellow-100 text-yellow-800",
-      Inactive: "bg-red-100 text-red-800",
-      Archived: "bg-gray-100 text-gray-800"
-    };
-    
-    return (
-      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusStyles[status as keyof typeof statusStyles] || 'bg-gray-100 text-gray-800'}`}>
+  const getStatusBadge = (status: string) => { 
+    const statusStyles = { 
+      Active: "bg-green-100 text-green-800", 
+      Pending: "bg-yellow-100 text-yellow-800", 
+      Expired: "bg-red-100 text-red-800", 
+      Cancelled: "bg-gray-100 text-gray-800" 
+    }; 
+    return ( 
+      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusStyles[status as keyof typeof statusStyles] || 'bg-gray-100 text-black-800'}`}>
         {status}
-      </span>
+      </span> 
+    ) 
+  }
+
+  // Modal Component
+  const Modal = () => {
+    if (!isModalOpen) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black/25 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg w-full max-w-md">
+          {/* Modal Header */}
+          <div className="flex justify-between items-center p-6 bg-blue-600 border-b">
+            <h3 className="text-lg font-semibold text-white">{getModalTitle()}</h3>
+            <button 
+              onClick={closeModal}
+              className="text-white hover:text-gray-200 text-xl"
+            >
+              ✕
+            </button>
+          </div>
+          
+          {/* Modal Content */}
+          <div className="p-6 space-y-4">
+            {modalType === 'view' && selectedPolicy && (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Policy Number
+                  </label>
+                  <p className="text-sm text-gray-900">{selectedPolicy.policyNumber}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Customer
+                  </label>
+                  <p className="text-sm text-gray-900">{selectedPolicy.customer}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Policy Type
+                  </label>
+                  <p className="text-sm text-gray-900">{selectedPolicy.type}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Status
+                  </label>
+                  <div className="text-sm">{getStatusBadge(selectedPolicy.status)}</div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Start Date
+                  </label>
+                  <p className="text-sm text-gray-900">{selectedPolicy.startDate}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    End Date
+                  </label>
+                  <p className="text-sm text-gray-900">{selectedPolicy.endDate}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Premium
+                  </label>
+                  <p className="text-sm text-gray-900">{selectedPolicy.premium}</p>
+                </div>
+              </div>
+            )}
+
+            {(modalType === 'edit' || modalType === 'add') && formData && (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Policy Number
+                  </label>
+                  <input
+                    type="text"
+                    name="policyNumber"
+                    value={formData.policyNumber || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter policy number"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Customer
+                  </label>
+                  <input
+                    type="text"
+                    name="customer"
+                    value={formData.customer || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter customer name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Policy Type
+                  </label>
+                  <select
+                    name="type"
+                    value={formData.type || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="Life">Life Insurance</option>
+                    <option value="Health">Health Insurance</option>
+                    <option value="Motor">Motor Insurance</option>
+                    <option value="Travel">Travel Insurance</option>
+                    <option value="Home">Home Insurance</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Status
+                  </label>
+                  <select
+                    name="status"
+                    value={formData.status || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Expired">Expired</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Start Date
+                  </label>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={formData.startDate || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    End Date
+                  </label>
+                  <input
+                    type="date"
+                    name="endDate"
+                    value={formData.endDate || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Premium
+                  </label>
+                  <input
+                    type="text"
+                    name="premium"
+                    value={formData.premium || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="e.g., KES 5,000/month"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Modal Footer */}
+          <div className="flex justify-end space-x-3 p-6 border-t">
+            <button 
+              onClick={closeModal}
+              className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
+            >
+              Cancel
+            </button>
+            {(modalType === 'edit' || modalType === 'add') && (
+              <button 
+                onClick={handleSavePolicy}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
+              >
+                {modalType === 'add' ? 'Add Policy' : 'Save Changes'}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
     );
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Secondary Navbar Header */}
-      <nav className="flex items-center justify-end gap-8 px-6 py-3 border-b border-gray-200 bg-white">
-        {tabs.map((tab) => (
-          <Link
-            key={tab.id}
-            href={tab.href}
-            className={`pb-3 px-1 font-medium transition-colors ${
-              currentTab === tab.id
-                ? 'text-blue-600 border-b-2 border-blue-600'
-                : 'text-gray-500 hover:text-blue-700'
-            }`}
-          >
-            {tab.label}
-          </Link>
-        ))}
-      </nav>
+  // Main Section 
+  return ( 
+    <div className="min-h-screen bg-gray-50"> 
+      {/* Page Container */} 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"> 
+        {/* Header Section */} 
+        <div className="bg-white mt-4 border rounded-lg shadow-sm px-6 py-4"> 
+          <nav className="flex items-center justify-end gap-6 py-3"> 
+            {policyTabs.map((tab) => ( 
+              <Link key={tab.id} href={tab.href} className={`pb-3 px-1 font-medium transition-colors ${ 
+                currentTab === tab.id ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-500 hover:text-blue-700" 
+                }`} 
+              > 
+                {tab.label} 
+              </Link> 
+            ))} 
+          </nav> 
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4"> 
+            {/* Left */} 
+            <div className="flex items-center gap-3"> 
+              <i className={`${currentContent.icon} text-blue-600 text-xl`}></i> 
+              <div> 
+                <h2 className="text-lg font-semibold text-gray-900"> 
+                  {currentContent.title} 
+                </h2> 
+                <p className="text-sm text-gray-600 mt-1"> 
+                  {currentContent.description} 
+                </p> 
+              </div> 
+            </div> 
+            {/* Right */} 
+            <div className="flex items-center gap-4"> 
+              <div className="text-right"> 
+                <p className="text-sm font-medium text-gray-900"> 
+                  {currentContent.stats} 
+                </p> 
+                <p className="text-xs text-gray-500 mt-1"> 
+                  Last updated: Just now 
+                </p> 
+              </div> 
+              <button onClick={openAddModal} className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg text-white transition font-medium" > 
+                Add Policy 
+              </button> 
+            </div> 
+          </div> 
+        </div> 
 
-      {/* Tab Content Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <i className={`${currentContent.icon} text-blue-600 text-xl`}></i>
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">
-                {currentContent.title}
-              </h2>
-              <p className="text-sm text-gray-600 mt-1">
-                {currentContent.description}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-sm font-medium text-gray-900">
-                {currentContent.stats}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">Last updated: Just now</p>
-            </div>
-            <button 
-              onClick={openModal}
-              className="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg text-white transition-colors font-medium"
-            >
-              Add Customer
-            </button>
-          </div>
-        </div>
-      </div>
+        {/* Content Section */} 
+        <div className="mt-6"> 
+          <Card className="bg-white text-black"> 
+            <CardHeader> 
+              <CardTitle>Policy Management</CardTitle> 
+            </CardHeader> 
+            <CardContent className="space-y-6"> 
+              {/* Search Row */} 
+              <div className="flex flex-col sm:flex-row justify-between gap-4 items-center"> 
+                <Input placeholder="Search by customer or policy number" className="w-full sm:w-64" /> 
+                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"> 
+                  Search 
+                </button> 
+              </div> 
+              {/* Table Responsive Wrapper */} 
+              <div className="bg-white rounded-xl shadow border w-full overflow-hidden"> 
+                <div className="w-full overflow-x-auto"> 
+                  <table className="min-w-max w-full table-auto divide-y divide-gray-200"> 
+                    <thead className="bg-blue-600 text-white uppercase text-sm"> 
+                      <tr> 
+                        <th className="px-4 py-3 text-left">Policy #</th> 
+                        <th className="px-4 py-3 text-left">Customer</th> 
+                        <th className="px-4 py-3 text-left">Type</th> 
+                        <th className="px-4 py-3 text-left">Status</th> 
+                        <th className="px-4 py-3 text-left">Start</th> 
+                        <th className="px-4 py-3 text-left">End</th> 
+                        <th className="px-4 py-3 text-left">Premium</th> 
+                        <th className="px-4 py-3 text-left">Actions</th> 
+                      </tr> 
+                    </thead> 
+                    <tbody className="bg-white divide-y divide-gray-200"> 
+                      {currentPolicies.map((policy) => ( 
+                        <tr key={policy.policyNumber} className="hover:bg-gray-50 transition" > 
+                          <td className="px-4 py-4 text-sm font-medium text-gray-900"> 
+                            {policy.policyNumber} 
+                          </td> 
+                          <td className="px-4 py-4 text-sm"> 
+                            {policy.customer} 
+                          </td> 
+                          <td className="px-4 py-4 text-sm"> 
+                            {policy.type} 
+                          </td> 
+                          <td className="px-4 py-4"> 
+                            {getStatusBadge(policy.status)} 
+                          </td> 
+                          <td className="px-4 py-4 text-sm text-gray-500"> 
+                            {policy.startDate} 
+                          </td> 
+                          <td className="px-4 py-4 text-sm text-gray-500"> 
+                            {policy.endDate} 
+                          </td> 
+                          <td className="px-4 py-4 text-sm"> 
+                            {policy.premium} 
+                          </td> 
+                          <td className="px-4 py-4 text-sm font-medium"> 
+                            <button 
+                              onClick={() => openViewModal(policy)} 
+                              className="text-blue-600 hover:text-blue-900 mr-3"
+                            > 
+                              View 
+                            </button> 
+                            <button 
+                              onClick={() => openEditModal(policy)} 
+                              className="text-blue-600 hover:text-blue-900"
+                            > 
+                              Edit 
+                            </button> 
+                          </td> 
+                        </tr> 
+                      ))} 
+                    </tbody> 
+                  </table> 
+                </div> 
+              </div> 
+            </CardContent> 
+          </Card> 
+        </div> 
+      </div> 
 
-      {/* Customer Table */}
-      <div className="p-6">
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-blue-600 text-white text-medium font-semibold uppercase tracking-wider">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left ">
-                    Customer
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left ">
-                    Contact
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left">
-                    Join Date
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left ">
-                    Status
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left ">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {currentCustomers.map((customer) => (
-                  <tr key={customer.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">{customer.name}</div>
-                        <div className="text-sm text-gray-500">{customer.type}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{customer.email}</div>
-                      <div className="text-sm text-gray-500">{customer.phone}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {customer.joinDate}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {getStatusBadge(customer.status)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-blue-600 hover:text-blue-900 mr-3">
-                        Edit
-                      </button>
-                      <button className="text-red-600 hover:text-red-900">
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="mt-4 text-center text-gray-500 text-sm">
-          <p>Showing {currentCustomers.length} of {currentCustomers.length} customers</p>
-        </div>
-      </div>
-
-      {/* Modal User box*/}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/25 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-md">
-            <div className="flex justify-between items-center p-6  bg-blue-600 border-b">
-              <h3 className="text-lg font-semibold text-white">Add New Customer</h3>
-              <button 
-                onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600 text-xl"
-              >
-                ✕
-              </button>
-            </div>
-            
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name
-                </label>
-                <input 
-                  type="text" 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter customer name"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
-                </label>
-                <input 
-                  type="email" 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter email address"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Phone
-                </label>
-                <input 
-                  type="tel" 
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter phone number"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Membership Type
-                </label>
-                <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option value="">Select membership</option>
-                  <option value="standard">Standard Member</option>
-                  <option value="premium">Premium Member</option>
-                  <option value="vip">VIP Member</option>
-                </select>
-              </div>
-            </div>
-            
-            <div className="flex justify-end space-x-3 p-6 border-t">
-              <button 
-                onClick={closeModal}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
-              >
-                Cancel
-              </button>
-              <button 
-                onClick={closeModal}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
-              >
-                Add Customer
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+      {/* Modal */}
+      <Modal />
+    </div> 
+  ); 
 }
