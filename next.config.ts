@@ -42,6 +42,10 @@ const nextConfig: NextConfig = {
         source: "/auth/verify-login-otp",
         destination: `${backendurl}/auth/verify-login-otp`,
       },
+      {
+        source: "/api/users/profile",
+        destination: `${backendurl}/api/users/profile`,
+      },
     ];
   }
 };
