@@ -22,11 +22,13 @@ export default function OtpPage() {
     e.preventDefault();
     toast.error(null);
 
-    const tempToken = sessionStorage.getItem("tempToken");
+    const tempToken = sessionStorage.getItem("token");
     if (!tempToken) {
       toast.error("Missing temporary token. Please sign in again.");
       return;
     }
+
+    console.log("TempToken:", tempToken);
 
     setLoading(true);
     try {
@@ -39,31 +41,32 @@ export default function OtpPage() {
           otpCode: otp,   
         }),
       });
-
-      let data;
-        try {
-             data = await res.json();     
-        } catch {
-             const text = await res.text(); 
-              data = { message: text };
-        }
-
+      const data = await res.json();
+      console.log("OTP verification response:", data);   
       if (!res.ok) {
         setMessage(data?.message || `Verification failed (${res.status})`);
         return;
       }
-
       // Success — store tokens if backend returns them
       if (data?.accessToken) {
-        sessionStorage.setItem("accessToken", data.accessToken);
+        sessionStorage.setItem("token", data.accessToken);
         if (data?.refreshToken)
           sessionStorage.setItem("refreshToken", data.refreshToken);
+        
+        toast.success("✅ OTP verified! Redirecting...");
+        
+        const firstLogin = sessionStorage.getItem("isFirstLogin");
+        if (firstLogin === "true") {
+          router.push("/security");
+        } else {
+          router.push("/dashboard");
+        }
+      } else {
+        setMessage("No access token received. Please try again.");
+        toast.error("Authentication failed. Please try again.");
       }
-
-      sessionStorage.removeItem("tempToken");
-      toast.error("✅ OTP verified! Redirecting...");
     } catch (err:any) {
-      toast.error("OTP verification error:", err);
+      console.error("OTP verification error:", err);
       toast.error("Network error — please try again later.");
     } finally {
       setLoading(false);

@@ -71,8 +71,8 @@ const data = {
       icon: Bot,
       items: [
         {
-          title: "Users and Roles",
-          url: "#",
+          title: "Users Management",
+          url: "/users",
         },
         {
           title: "Roles and Permissions",
@@ -81,6 +81,10 @@ const data = {
         {
           title: "Permissions",
           url: "#",
+        },
+        {
+          title: "Add New User",
+          url: "/users/create",
         },
       ],
     },

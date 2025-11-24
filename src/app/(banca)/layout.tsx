@@ -1,5 +1,6 @@
 import { AppSidebar } from "@/components/app-sidebar"
 import { Separator } from "@/components/ui/separator"
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import {
   SidebarInset,
   SidebarProvider,
@@ -12,7 +13,7 @@ export default function GeneralLayout({
 }) {
    
   return (
-
+<ErrorBoundary>
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
@@ -33,6 +34,6 @@ export default function GeneralLayout({
       </SidebarInset>
       
     </SidebarProvider>
- 
+ </ErrorBoundary>
   );
 }

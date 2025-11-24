@@ -94,35 +94,27 @@ export default function SignInPage() {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          accept :"application/json", 
-          Authorization: `Bearer ${token}`,
+          accept :"application/json",
          },
         body: JSON.stringify(payload),
         credentials: "include",
       }
     );
-
-      let data;
-        try {
-             data = await res.json();     
-        } catch {
-             const text = await res.text(); 
-              data = { message: text };
-        }
-
+    
+   
+    const data = await res.json(); 
+    console.log("Response data:", data);  
       if (!res.ok) {
         setServerMsg(data?.message || `Sign in failed (${res.status})`);
       } else {
         // 🔹 Save tempToken for OTP verification
         if (data?.tempToken) {
-          sessionStorage.setItem("tempToken", data.tempToken);
-        }
-        if (data?.user) {
-          sessionStorage.setItem("user", JSON.stringify(data.user));
+          sessionStorage.setItem("token", data.tempToken);
         }
 
         setServerMsg("OTP sent! Redirecting to verification page...");
-        setTimeout(() => router.push("/otp"), 800);
+        toast.success("✅ OTP sent! Redirecting...");
+        router.push("/otp");
       }
     } catch (err) {
       console.error("Network error", err);
