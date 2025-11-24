@@ -15,7 +15,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning={true}>
       <body className="min-h-screen w-full bg-gray-50 text-gray-900 overflow-x-hidden antialiased">
         {children}
-        <Toaster />
+        <Toaster position="top-right" expand={false} richColors closeButton/>
       </body>
     </html>
   );
