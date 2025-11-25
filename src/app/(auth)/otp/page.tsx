@@ -219,6 +219,6 @@ export default function OtpPage() {
   </div>
 </div>
       
-    
+   
   );
 }

@@ -12,11 +12,13 @@ import {
   Send,
   Settings2,
   SquareTerminal,
+  ChevronRight,
+  ChevronDown,
 } from "lucide-react"
 
-import { NavMain } from "@/components/nav-main"
+//import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
-import { NavSecondary } from "@/components/nav-secondary"
+//import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
