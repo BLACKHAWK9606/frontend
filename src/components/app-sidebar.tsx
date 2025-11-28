@@ -12,12 +12,14 @@ import {
   Send,
   Settings2,
   SquareTerminal,
-  ChevronDown,
   ChevronRight,
-} from "lucide-react";
+  ChevronDown,
+} from "lucide-react"
 
-import { NavProjects } from "@/components/nav-projects";
-import { NavUser } from "@/components/nav-user";
+//import { NavMain } from "@/components/nav-main"
+import { NavProjects } from "@/components/nav-projects"
+//import { NavSecondary } from "@/components/nav-secondary"
+import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -280,14 +282,14 @@ function NavSecondary({items, className}: {items: typeof data.navSecondary, clas
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar variant="inset" {...props} >
       <SidebarHeader>
         <SidebarMenu >
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href="/dashboard">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Command className="size-4" />
+              <Link href="/dashboard" className="text-white ">
+                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg border border-amber-50">
+                  <Command className="size-4 " />
             
                 </div>
                 <div className="grid flex-1 text-left text-lg leading-tight">
@@ -295,13 +297,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span className="truncate text-xs">Insurance</span>
                 </div>
               </Link>
-              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
+      <SidebarContent className="text-black border-r-4 border-(--custom-primary)">
+        <NavMain items={data.navMain}/>
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
